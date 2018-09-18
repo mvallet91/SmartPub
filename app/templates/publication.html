@@ -95,13 +95,13 @@
 
   <ul class="nav nav-tabs nav-tabs-line" data-plugin="nav-tabs" role="tablist">
 
-       {% for id, title,journal,year,authors in zipped_lists %}
+       {% for id, title, journal, year, authors in zipped_lists %}
 
                                 <h1>{{ title }}</h1>
                <!--<table>-->
                   <!--<tr>-->
                                   {% for author in authors %}
-                <span style="display: inline-block"><a class="search-result-link" href="http://127.0.0.1:5000/author/{{author}}"> {{author}} &nbsp</a></span>
+                <span style="display: inline-block"><a class="search-result-link" href="/author/{{author}}"> {{author}} &nbsp</a></span>
 
                      <!--<td><a class="search-result-link" href="http://127.0.0.1:5000/author/{{author}}"> {{author}}, &nbsp</a> </td>-->
 
@@ -115,7 +115,8 @@
 
     <li class="active"><a href="#Abstract">Abstract</a></li>
     <li><a href="#refref">References</a></li>
-    <li><a href="#entities">Entities</a></li>
+    <li><a href="#entities">Entities</a></li>    
+    <li><a href={{url}}>View Article</a></li>
 
   </ul>
 
@@ -132,11 +133,11 @@
        <ul class="list-group">
                       {% for ent in method %}
 
-                    <li class="list-group-item"><a class="search-result-link" href="http://127.0.0.1:5000/entities/method/{{ent}}">{{ent}}</a></li>
+                    <li class="list-group-item"><a class="search-result-link" href="/entities/method/{{ent}}">{{ent}}</a></li>
          {% endfor %}
           {% for ent in dataset %}
 
-                    <li class="list-group-item"><a class="search-result-link" href="http://127.0.0.1:5000/entities/dataset/{{ent}}">{{ent}}</a></li>
+                    <li class="list-group-item"><a class="search-result-link" href="/entities/dataset/{{ent}}">{{ent}}</a></li>
          {% endfor %}
 
        </ul>

@@ -3,7 +3,7 @@ import string, time
 
 start = time.time()
 tr = str.maketrans("", "", string.punctuation)
-client = MongoClient('localhost:4321')
+client = MongoClient('localhost:27017')
 
 db = client.smartpub
 pub_db = client.pub
@@ -12,19 +12,27 @@ print('Updating lower and no punctuation')
 entities = db.entities.find()
 x = 0
 for rr in entities:
+    if not 'word' in rr:
+        continue
     word = rr['word'].lower()
     no_punkt = word.translate(tr)
     clean = ''.join([i for i in no_punkt if not i.isdigit()])
     lower = rr['word'].lower()
+    ds_sim = rr['ds_similarity']
+    mt_sim = rr['mt_similarity']
+    if type(ds_sim) is str:
+        ds_sim = 0
+    if type(mt_sim) is str:
+        mt_sim = 0
     db.entities.update_one({'_id': rr['_id']},
                            {"$set": {'clean': clean, 'no_punkt': no_punkt,
-                                     'word_lower': lower}}, upsert=False)
+                                     'word_lower': lower, 'ds_similarity': ds_sim, 'mt_similarity': mt_sim}}, upsert=False)
     x = x + 1
     if x % 10000 == 0:
         print(x, 'lower and no punctuation updated')
 
 pub_entities = pub_db.entities.find()
-print('Creating dictionary of human annotations')
+print('Creating dictionary of expert annotations')
 ann = {}
 for rr in pub_entities:
     if rr['Annotator'] != 'undefined':
@@ -39,12 +47,10 @@ for rr in entities:
     try:
         new = ann[rr['word'].lower()]
         db.entities.update_one({'_id': rr['_id']}, {"$set": {'Annotator': new}}, upsert=False)
-        # print(rr['word'].lower(), ann[rr['word'].lower()])
         x = x + 1
         if x % 5000 == 0:
             print(x, 'entities updated')
     except KeyError:
-        # print('No annotation for', rr['word'].lower())
         y = y + 1
         pass
 

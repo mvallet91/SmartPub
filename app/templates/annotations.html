@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html class="no-js css-menubar" lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+  <meta name="description" content="bootstrap admin template">
+  <meta name="author" content="">
+
+  <title>Search result | Remark Admin Template</title>
+
+  <link rel="apple-touch-icon" href="/static/images/apple-touch-icon.png">
+  <link rel="shortcut icon" href="/static/images/favicon.ico">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/static/css/bootstrap-extend.min.css">
+  <link rel="stylesheet" href="/static/css/site.min.css">
+
+  <!-- Plugins -->
+  <link rel="stylesheet" href="/static/vendor/animsition/animsition.css">
+  <link rel="stylesheet" href="/static/vendor/asscrollable/asScrollable.css">
+  <link rel="stylesheet" href="/static/vendor/switchery/switchery.css">
+  <link rel="stylesheet" href="/static/vendor/intro-js/introjs.css">
+  <link rel="stylesheet" href="/static/vendor/slidepanel/slidePanel.css">
+  <link rel="stylesheet" href="/static/vendor/flag-icon-css/flag-icon.css">
+
+  <!-- Fonts -->
+  <link rel="stylesheet" href="/static/fonts/web-icons/web-icons.min.css">
+  <link rel="stylesheet" href="/static/fonts/brand-icons/brand-icons.min.css">
+  <link rel='stylesheet' href='http://fonts.googleapis.com/css?family=Roboto:300,400,500,300italic'>
+  <!-- Inline -->
+  <link rel="stylesheet" href="/static/examples/css/pages/search-result.css">
+
+  <!--[if lt IE 9]>
+    <script src="..//static/vendor/html5shiv/html5shiv.min.js"></script>
+    <![endif]-->
+
+  <!--[if lt IE 10]>
+    <script src="..//static/vendor/media-match/media.match.min.js"></script>
+    <script src="..//static/vendor/respond/respond.min.js"></script>
+    <![endif]-->
+
+  <!-- Scripts -->
+  <script src="/static/vendor/modernizr/modernizr.js"></script>
+  <script src="/static/vendor/breakpoints/breakpoints.js"></script>
+  <script>
+    Breakpoints();
+
+  </script>
+  <style>
+    *.unselectable {
+   -moz-user-select: -moz-none;
+   -khtml-user-select: none;
+   -webkit-user-select: none;
+
+   /*
+     Introduced in IE 10.
+     See http://ie.microsoft.com/testdrive/HTML5/msUserSelect/
+   */
+   -ms-user-select: none;
+   user-select: none;
+}
+
+  </style>
+</head>
+<body class="page-search">
+  <!--[if lt IE 8]>
+        <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
+
+  <nav class="site-navbar navbar navbar-default navbar-fixed-top navbar-mega" role="navigation">
+
+
+    <div class="navbar-container container-fluid">
+      <!-- Navbar Collapse -->
+      <div class="collapse navbar-collapse navbar-collapse-toolbar" id="site-navbar-collapse">
+        <!--<form class="page-search-form" role="search" action="search" method="post">-->
+          <!--<div class="input-search input-search-dark" style="top: 20px;" align="center" >-->
+            <!--&lt;!&ndash;<i class="input-search-icon wb-search" aria-hidden="true"></i>&ndash;&gt;-->
+            <!--<input type="text" class="form-control" name="search" placeholder="Search..." size="30">-->
+              <!--<input type="submit" />-->
+
+          <!--</div>-->
+        <!--</form>-->
+        <!-- Navbar Toolbar -->
+
+        <!-- End Navbar Toolbar -->
+
+        <!-- Navbar Toolbar Right -->
+
+        <!-- End Navbar Toolbar Right -->
+      </div>
+      <!-- End Navbar Collapse -->
+
+      <!-- Site Navbar Seach -->
+      <!-- End Site Navbar Seach -->
+    </div>
+  </nav>
+
+
+
+  <!-- Page -->
+  <div class="page animsition">
+    <div class="page-content">
+      <!-- Panel -->
+      <div class="container">
+  <h4 unselectable="on" class="unselectable">Please select mentions of adverse drug reactions (i.e. the harmful reactions caused by taking a medication).</h4>
+  <p>{{sentences}}:</p>
+
+
+
+  <form id="#radio_checking" action="{{url_for('annotation_ambigious')}}" method="post">
+    <div>
+      <p unselectable="on" class="unselectable"> <b>Selected Span:</b></p>
+    <input id="sel" name="seltext" style="width: 300px;">
+      </div>
+  <!--</form>-->
+        <!--<form action="{{url_for('crowdsourcing_ambigious')}}" method="post">-->
+    <br>
+    <div>
+      <button type="submit" name="submit_button1" value="submitted" class="btn btn-success">Submit</button>
+        <button type="submit" name="next_button" value="submitted" class="btn btn-warning">Next</button>
+      </div>
+
+
+          </form>
+</div>
+    </div>
+    <p unselectable="on" class="unselectable"><b> Annotation Guideline:</b> Please select one ADR at a time and push the Submit button. After annotating all the ADRs in the text, push the Next button to go to the next post. Some examples:
+      <ul>
+  <li>In the sentence “Sometimes causes drowsiness.”, “drowsiness” is an adverse effect</li>
+  <li>All the necessary context for an ADR concept should be annotated. For example, if the sentence said “I experience acute stomach pain…”, then “acute stomach pain” should be  annotated not just “stomach pain”</li>
+  <li>In a sentence such as “I felt blank like a blank piece of paper”, only “felt blank” should be annotated.</li>
+</ul></p>
+  </div>
+  <!-- End Page -->
+
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <span class="site-footer-legal">© 2018 <a href="http://themeforest.net/item/remark-responsive-bootstrap-admin-template/11989202">ScholarSurf</a></span>
+    <!--<div class="site-footer-right">-->
+      <!--Crafted with <i class="red-600 wb wb-heart"></i> by <a href="http://themeforest.net/user/amazingSurge">amazingSurge</a>-->
+    <!--</div>-->
+  </footer>
+  <!-- Core  -->
+  <script src="/static/vendor/jquery/jquery.js"></script>
+  <script src="/static/vendor/bootstrap/bootstrap.js"></script>
+  <script src="/static/vendor/animsition/jquery.animsition.js"></script>
+  <script src="/static/vendor/asscroll/jquery-asScroll.js"></script>
+  <script src="/static/vendor/mousewheel/jquery.mousewheel.js"></script>
+  <script src="/static/vendor/asscrollable/jquery.asScrollable.all.js"></script>
+  <script src="/static/vendor/ashoverscroll/jquery-asHoverScroll.js"></script>
+
+  <!-- Plugins -->
+  <script src="/static/vendor/switchery/switchery.min.js"></script>
+  <script src="/static/vendor/intro-js/intro.js"></script>
+  <script src="/static/vendor/screenfull/screenfull.js"></script>
+  <script src="/static/vendor/slidepanel/jquery-slidePanel.js"></script>
+
+  <!-- Scripts -->
+  <script src="/static/js/core.js"></script>
+  <script src="/static/js/site.js"></script>
+
+  <script src="/static/js/sections/menu.js"></script>
+  <script src="/static/js/sections/menubar.js"></script>
+  <script src="/static/js/sections/gridmenu.js"></script>
+  <script src="/static/js/sections/sidebar.js"></script>
+
+  <script src="/static/js/configs/config-colors.js"></script>
+  <script src="/static/js/configs/config-tour.js"></script>
+
+  <script src="/static/js/components/asscrollable.js"></script>
+  <script src="/static/js/components/animsition.js"></script>
+  <script src="/static/js/components/slidepanel.js"></script>
+  <script src="/static/js/components/switchery.js"></script>
+  <script src="/static/js/mark.min.js" charset="UTF-8"></script>
+
+
+  <!-- Scripts For This Page -->
+
+
+  <script>
+    (function(document, window, $) {
+      'use strict';
+
+      var Site = window.Site;
+      $(document).ready(function() {
+        Site.run();
+      });
+    })(document, window, jQuery);
+  </script>
+
+<script type="text/javascript">
+// Using jQuery.
+
+$(function() {
+    $('form').each(function() {
+        $(this).find('input').keypress(function(e) {
+            // Enter pressed?
+            if(e.which == 10 || e.which == 13) {
+                this.form.submit();
+            }
+        });
+
+        $(this).find('input[type=submit]').hide();
+    });
+});
+</script>
+<script>
+$(document).ready(function(){
+    $(".nav-tabs a").click(function(){
+        $(this).tab('show');
+    });
+});
+</script>
+<script>
+    var context = document.querySelector(".container"); // requires an element with class "context" to exist
+var instance = new Mark(context);
+instance.mark('{{entity}}'); // will mark the keyword "test"
+
+
+</script>
+<script>
+  function send() {
+    if (document.getElementById('id_dataset').checked == true) {
+
+      console.log('you selected dataset')
+    }
+
+    if (document.getElementById('id_method').checked == true) {
+
+      console.log('you selected method')
+    }
+    if (document.getElementById('id_other').checked == true) {
+
+      console.log('you selected other')
+    }
+  }
+
+
+</script>
+<script>
+
+  function getSelectionText() {
+    var text = "";
+    var activeEl = document.activeElement;
+    var activeElTagName = activeEl ? activeEl.tagName.toLowerCase() : null;
+    if (
+      (activeElTagName == "textarea")
+    ) {
+        text = activeEl.value.slice(activeEl.selectionStart, activeEl.selectionEnd);
+    } else if (window.getSelection) {
+        text = window.getSelection().toString();
+    }
+    return text;
+}
+  document.onmouseup = document.onkeyup = document.onselectionchange = function() {
+  document.getElementById("sel").value = getSelectionText();
+    var mytt=getSelectionText();
+};
+</script>
+</body>
+
+</html>

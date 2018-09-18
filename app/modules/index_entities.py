@@ -2,42 +2,73 @@ from pymongo import MongoClient
 from elasticsearch import Elasticsearch
 from elasticsearch import helpers
 import nltk
+from nltk.corpus import stopwords, wordnet
 
 sent_detector = nltk.data.load('tokenizers/punkt/english.pickle')
 ###############################
 
-client = MongoClient('localhost:4321')
+client = MongoClient('localhost:27017')
 es = Elasticsearch(
     [{'host': 'localhost', 'port': 9200}], timeout=30, max_retries=10, retry_on_timeout=True
 )
 es.cluster.health(wait_for_status='yellow', request_timeout=1)
+
+
+def token_stopword_filter(word: str):
+    filtered_word = word.strip()
+    tokens = word.split()
+    if len(tokens) > 1 and tokens[-1] in stopwords.words('english'):
+        filtered_word = ' ' .join(tokens[:-1])
+    tokens = filtered_word.split()
+    if len(tokens) > 1 and tokens[0] in stopwords.words('english'):
+        filtered_word = ' ' .join(tokens[1:])
+    return filtered_word
+
+filter_publications = ['arxiv']
+existing_ids = []
+for publication in filter_publications:
+    query={"query": {"match": {"journal": {"query": publication}}}}
+    for doc in helpers.scan(es, index="entities_smartpub", query=query, size=50):
+        existing_ids.append(doc['_id'])
+        
+print(len(existing_ids), 'entities already in index')
 
 db = client.smartpub
 pub = db.publications
 all_entities = db.entities.find()
 actions = []
 count = 0
+excluded = 0
 for rr in all_entities:
+    
+    if rr['_id'] in existing_ids:
+        continue
+        
+    if rr["Annotator"] in ['noise', 'other'] or rr["word"].lower() in stopwords.words('english') \
+    or wordnet.synsets(rr["word"].lower()) or rr['word'] == 'no_entities':
+        excluded = excluded + 1
+        continue
+        
     count = count + 1
-    if count % 25000 == 0:
-        print(count, "entities into batch")
+    
     try:
+        filtered_word = token_stopword_filter(rr['word'])
         actions.append({
             "_index": "entities_smartpub",
             "_type": "entities",
-            "_id": rr['paper_id'] + str(count),
+            "_id": rr['paper_id'] + '_' + filtered_word,
             "paper_id": rr['paper_id'],
             "title": rr['title'],
             "year": rr['year'],
             "journal": rr['journal'],
-            "word": rr['word'],
+            "word": filtered_word,
             "inwordNet": rr['in_wordnet'],
             "label": rr['label'],
             "PMIdata": rr['pmi_data'],
             "PMImethod": rr['pmi_method'],
             "filteredWord": rr['filtered_word'],
-            "ds_similarity": round(rr['ds_similarity'], 5),
-            "mt_similarity": round(rr['mt_similarity'], 5),
+            "ds_similarity": round(float(rr['ds_similarity']), 4),
+            "mt_similarity": round(float(rr['mt_similarity']), 4),
             "ds_sim_50": rr['ds_sim_50'],
             "ds_sim_60": rr['ds_sim_60'],
             "ds_sim_70": rr['ds_sim_70'],
@@ -56,8 +87,13 @@ for rr in all_entities:
         })
     except KeyError:
         pass
+    
+    if count % 25000 == 0:
+        print(count, "entities into batch")
 
 try:
     res = helpers.bulk(es, actions)
 except es.helpers.BulkIndexError:
     pass
+
+print(count, 'entities added to index,', excluded, 'entities excluded and', len(existing_ids), 'previously in index')

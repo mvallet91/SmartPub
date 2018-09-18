@@ -272,7 +272,7 @@ button {
                           </a>
                         </div>
                         <div class="media-body">
-                          <h4 class="media-heading"><a class="search-result-link" href="http://127.0.0.1:5000/author/{{author}}">{{author}}</a>
+                          <h4 class="media-heading"><a class="search-result-link" href="/author/{{author}}">{{author}}</a>
 
                           </h4>
 
@@ -845,7 +845,7 @@ $('.multiselect-ui').change( function(event) {
               })
               .text(function(d) { return d.text; })
       .on("click", function (d, i){
-          window.location = "http://127.0.0.1:5000/entities/method/"+d.text;
+          window.location = "/entities/method/"+d.text;
       })
             .on({
       "mouseover": function(d) {

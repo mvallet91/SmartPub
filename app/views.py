@@ -1,14 +1,17 @@
 from app import app
 import flask
+import datetime
 from flask import Flask, request, render_template, redirect, url_for
 from app.modules import search_elastic
 import pandas as pd
+from collections import Counter
 
 import dash
 import dash_html_components as html
 import dash_core_components as dcc
 from dash.dependencies import Input, Output
 import plotly.graph_objs as go
+import plotly.figure_factory as ff
 
 from elasticsearch import Elasticsearch
 from elasticsearch import helpers
@@ -16,6 +19,10 @@ from elasticsearch import helpers
 es = Elasticsearch(
     [{'host': 'localhost', 'port': 9200}], timeout=30, max_retries=10, retry_on_timeout=True
 )
+
+# @app.route("/")
+# def hello():
+#     return "<h1 style='color:blue'>Welcome to SmartPub: Search and Compare Scientific Publications</h1>"
 
 
 @app.route('/')
@@ -32,19 +39,23 @@ def search():  # after pressing the search button
         id_list)
     word_cloud = search_elastic.word_cloud_for_first_page(id_list, text)
 
-    # print(method_popular_entities[:7])
-    # print(dataset_popular_entities[:7])
-    # print(upcoming_entities[:10])
-
     method_popular_entities = method_popular_entities[:7]
     dataset_popular_entities = dataset_popular_entities[:7]
-
-    # if __name__ == '__main__':
+    
+    count = (Counter(year_list))
+    count = sorted(count.items())
+    overview_count = []
+    overview_label = []
+    for x in count:
+        overview_count.append(x[1])
+        overview_label.append(str(x[0]))
+    
     return flask.render_template("search-result.html",
                                  zipped_lists=zip(id_list, title_list, journal_list, year_list, authors_list),
                                  search_text=text, word_cloud=word_cloud,
                                  method_popular_entities=method_popular_entities,
-                                 dataset_popular_entities=dataset_popular_entities)
+                                 dataset_popular_entities=dataset_popular_entities,
+                                 overview_count=overview_count, overview_label=overview_label)
 
 
 @app.route('/search-result', methods=['GET'])
@@ -64,13 +75,10 @@ def search_post():  # after pressing the search button
 def entities():  # after pressing the search button
     entity = request.form['searchent']
 
-    # else:
-    #     return flask.render_template("entities.html")
-
     popular = search_elastic.wordcloud_entity(entity)
 
     id_list, title_list, journal_list, year_list, authors_list = search_elastic.dosearch_entity(entity)
-    print(title_list)
+#     print(title_list)
 
     return flask.render_template("entities.html", entity_name=entity, popular=popular,
                                  zipped_lists=zip(id_list, title_list, journal_list, year_list, authors_list))
@@ -91,11 +99,12 @@ def publication(publication_id):
         publicationid = publication_id
         id_list, title_list, journal_list, year_list, authors_list, abstract_list, method_entities, dataset_entities, amb_entities = search_elastic.search_by_id(
             publicationid)
+        arxiv_id = publication_id.split('_')[1]
         abstract_list = ' '.join(abstract_list)
-
+        paper_url = "https://arxiv.org/pdf/" + arxiv_id + ".pdf"
         return flask.render_template("publication.html",
                                      zipped_lists=zip(id_list, title_list, journal_list, year_list, authors_list),
-                                     abstract=abstract_list, method=method_entities, dataset=dataset_entities)
+                                     abstract=abstract_list, method=method_entities, dataset=dataset_entities, url=paper_url)
 
 
 @app.route('/author/<author_name>')
@@ -179,6 +188,9 @@ def get_d3_piedata(entity):
     print(df)
     return df.to_csv()
 
+@app.route('/test')
+def hello_world():
+    return flask.render_template("annotations.html", sentences=sentences)
 
 @app.route('/crowdsourcing/<entity>', methods=['GET'])
 def crowdsourcing(entity):  # after pressing the search button
@@ -200,6 +212,36 @@ def crowdsourcing_ambigious():  # after pressing the search button
             search_elastic.update_db_crowdsourcing(entity.lower(), name1)
 
         return redirect(url_for('crowdsourcing_ambigious'))
+    
+@app.route('/annotations', methods=['GET','POST'])
+def annotation_ambigious():  # after pressing the search button
+    sentences, post_id = search_elastic.select_reddit_post()
+
+    if request.method == 'GET':
+        return flask.render_template("annotations.html", sentences=sentences)
+#         return flask.render_template("annotations.html", sentences='this is a test sentence')
+
+    if request.method == 'POST':
+        try:
+            name1 = request.form['seltext']
+            if name1:
+                 search_elastic.add_annotation(post_id, name1)
+        except:
+            pass
+        try:
+            next_button = request.form["next_button"]
+
+            if next_button:
+                search_elastic.remove_temp(post_id)
+                sentences, post_id = search_elastic.select_reddit_post()
+        except:
+            pass
+
+
+
+        #return redirect(url_for('annotation_ambigious'))
+        return flask.render_template("annotations.html", sentences=sentences)
+
 
 
 # @app.route('/dashboard/')
@@ -210,55 +252,138 @@ def crowdsourcing_ambigious():  # after pressing the search button
 
 dashboard = dash.Dash(__name__, server=app, url_base_pathname='/dashapp')
 
-clean_stats = pd.read_pickle('app/modules/stats_pickles/clean_stats.pkl')
-pub_stats = pd.read_pickle('app/modules/stats_pickles/pub_stats.pkl')
+clean_stats = pd.read_pickle('/data2/SmartPub/app/modules/stats_pickles/clean_stats.pkl')
+entity_stats = pd.read_pickle('/data2/SmartPub/app/modules/stats_pickles/entity_stats.pkl')
+pub_stats = pd.read_pickle('/data2/SmartPub/app/modules/stats_pickles/pub_stats.pkl')
 
+summary = clean_stats.groupby(['label', 'annotation'])['word'].count()
+summary = summary.reset_index()
+summary.columns = ['NER Label', 'Human Annotation', 'Count']
+
+with open('/data2/SmartPub/app/modules/stats_pickles/update_log.txt', 'r') as f:
+    dates = f.readlines()
+
+total_pub = len(pub_stats)
+total_ds = len(entity_stats.loc[(entity_stats['label'] == 'dataset')])
+unique_ds = len(entity_stats.loc[(entity_stats['label'] == 'dataset')].groupby('word').sum())
+total_mt = len(entity_stats.loc[(entity_stats['label'] == 'method')])
+unique_mt = len(entity_stats.loc[(entity_stats['label'] == 'method')].groupby('word').sum())
+total_ann = len(entity_stats.loc[(entity_stats['annotation'] != 'undefined')].groupby('word').sum())
+last_update = dates[-1]
+last_update = last_update[:10]
+last = datetime.datetime.strptime(last_update, '%Y-%m-%d')
+week = datetime.timedelta(days=7)
+next_update = last + week
+
+totals = [['', 'Values'],
+         ['Total Publications', total_pub], 
+         ['Total Dataset Entities', total_ds],
+         ['Unique Dataset Entities', unique_ds],
+         ['Total Method Entities', total_mt],
+         ['Unique Method Entities', unique_mt],
+         ['Total Human Annotated Entities', total_ann],
+         ['Last Update', last_update],
+         ['Next Update', next_update]]
+
+ds_ds = len(entity_stats.loc[(entity_stats['label'] == 'dataset') & (entity_stats['annotation'] == 'dataset')].groupby('word').sum())
+ds_na = len(entity_stats.loc[(entity_stats['label'] == 'dataset') & (entity_stats['annotation'] == 'undefined')].groupby('word').sum())
+ds_total = len(entity_stats.loc[(entity_stats['annotation'] == 'dataset')].groupby('word').sum())
+mt_total = len(entity_stats.loc[(entity_stats['annotation'] == 'method')].groupby('word').sum())
+mt_mt = len(entity_stats.loc[(entity_stats['label'] == 'method') & (entity_stats['annotation'] == 'dataset')].groupby('word').sum())
+mt_na = len(entity_stats.loc[(entity_stats['label'] == 'method') & (entity_stats['annotation'] == 'undefined')].groupby('word').sum())
+noise = len(entity_stats.loc[(entity_stats['annotation'] == 'noise')].groupby('word').sum())
+other = len(entity_stats.loc[(entity_stats['annotation'].isin(['other', 'system']))].groupby('word').sum())
+
+summ = [['Annotation', 'NER Label', 'Count'],
+        ['Dataset', 'Dataset', ds_ds],
+        ['Dataset Total', '', ds_total],
+        ['Not Annotated', 'Dataset',  ds_na],
+        ['Method', 'Method', mt_mt],
+        ['Method Total', '', mt_total],
+        ['Not Annotated', 'Method', mt_na],
+        ['Noise', '', noise],
+        ['Other', '', other],]
+
+pie = pub_stats.groupby('keywords')['id'].count()
+pie = pie.reset_index()
+pie.columns = ['Domain', 'Count']
+
+dashboard.css.append_css({"external_url": "https://codepen.io/chriddyp/pen/bWLwgP.css"})
 dashboard.layout = html.Div(children=[
-    html.H1(children='Dash App'),
-    # dcc.Graph(
-    #     id='pubs_per_year',
-    #     figure=go.Figure(
-    #         data=[
-    #             go.Histogram(x=stats['year'],
-    #                          name='Publications',
-    #                          marker=go.Marker(
-    #                              color='rgb(55, 83, 109)'
-    #                          ),
-    #                          xbins=dict(
-    #                              start=2012,
-    #                              end=2018,
-    #                              size=0.9
-    #                          )
-    #                          ),
-    #         ],
-    #         layout=go.Layout(
-    #             title='Publications per Year',
-    #             showlegend=True,
-    #             legend=go.Legend(
-    #                 x=0,
-    #                 y=1.0
-    #             ),
-    #             xaxis=dict(
-    #                 autotick=False,
-    #                 ticks='outside',
-    #                 tick0=0,
-    #                 dtick=1,
-    #                 ticklen=10,
-    #                 tickwidth=4
-    #             )
-    #         )
-    #     )
-    # ),
-    dcc.Checklist(
-        options=[
-            {'label': 'Undefined', 'value': 'U'},
-            {'label': 'Method', 'value': 'M'},
-            {'label': 'Dataset', 'value': 'D'}
-        ],
-        values=['U']
+    html.H1(children='SmartPub Dashboard'),
+    html.Div(children='''
+        Main stats of publications and entities in the SmartPub system
+    '''),
+    html.Div(
+        dcc.Graph(
+            id='summary',
+            figure=go.Figure(
+                ff.create_table(totals, colorscale='Blues', index=True, height_constant=30)
+            ),
+        style={'width': '425'}
+        ),
+        style={'display': 'inline-block'}
+    ),
+    html.Div(
+        dcc.Graph(
+            id='spacer',
+            figure=go.Figure(
+                ff.create_table([['']], colorscale = [[0, '#ffffff'], [0.5, '#ffffff'], [1, '#ffffff']], height_constant=100)
+            ),
+        style={'width': '100'}
+        ),
+        style={'display': 'inline-block'}
+    ),
+    html.Div(
+        dcc.Graph(
+            id='summary2',
+            figure=go.Figure(
+                ff.create_table(summ, colorscale='Blues', height_constant=30)
+            ),
+        style={'width': '600'}
+        ),
+        style={'display': 'inline-block'}
+    ),
+    html.Div(
+        dcc.Graph(
+            id='spacer2',
+            figure=go.Figure(
+                ff.create_table([['']], colorscale = [[0, '#ffffff'], [0.5, '#ffffff'], [1, '#ffffff']], height_constant=100)
+            ),
+        style={'width': '50'}
+        ),
+        style={'display': 'inline-block'}
+    ),
+    html.Div(
+        dcc.Graph(
+            id='topic_pie',
+            figure = go.Figure(
+                data = [
+                    go.Pie(
+                        labels=pie['Domain'], 
+                        values=pie['Count'],
+                        textinfo='none'
+                    )
+                ],
+                layout = go.Layout(
+                    title = 'Primary Topic of Publications',
+                    showlegend = False,
+                    margin=go.Margin(
+                        l=5,
+                        r=5,
+                        b=10,
+                        t=25,
+                        pad=4
+                    )
+                )
+            ),
+            style={'height': '400'}
+        ),
+        style={'display': 'inline-block'}
     ),
     dcc.Graph(
         id='pub_ent',
+        style={'height': 600},
         figure=go.Figure(
             data=[
                 go.Bar(
@@ -310,42 +435,41 @@ dashboard.layout = html.Div(children=[
             )
         )
     ),
-
-    dcc.Graph(
-        style={'height': 300},
-        id='Plastic-Example',
-        figure=go.Figure(
-            data=[
-                go.Bar(
-                    x=[1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003,
-                       2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012],
-                    y=[219, 146, 112, 127, 124, 180, 236, 207, 236, 263,
-                       350, 430, 474, 526, 488, 537, 500, 439],
-                    name='Rest of world',
-                    marker=go.Marker(
-                        color='rgb(55, 83, 109)'
-                    )
-                ),
-                go.Bar(
-                    x=[1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003,
-                       2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012],
-                    y=[16, 13, 10, 11, 28, 37, 43, 55, 56, 88, 105, 156, 270,
-                       299, 340, 403, 549, 499],
-                    name='China',
-                    marker=go.Marker(
-                        color='rgb(26, 118, 255)'
-                    )
-                )
-            ],
-            layout=go.Layout(
-                title='US Export of Plastic Scrap',
-                showlegend=True,
-                legend=go.Legend(
-                    x=0,
-                    y=1.0
-                ),
-                margin=go.Margin(l=40, r=0, t=40, b=30)
-            )
-        )
-    )
+#     dcc.Graph(
+#         style={'height': 300},
+#         id='Plastic-Example',
+#         figure=go.Figure(
+#             data=[
+#                 go.Bar(
+#                     x=[1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003,
+#                        2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012],
+#                     y=[219, 146, 112, 127, 124, 180, 236, 207, 236, 263,
+#                        350, 430, 474, 526, 488, 537, 500, 439],
+#                     name='Rest of world',
+#                     marker=go.Marker(
+#                         color='rgb(55, 83, 109)'
+#                     )
+#                 ),
+#                 go.Bar(
+#                     x=[1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003,
+#                        2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012],
+#                     y=[16, 13, 10, 11, 28, 37, 43, 55, 56, 88, 105, 156, 270,
+#                        299, 340, 403, 549, 499],
+#                     name='China',
+#                     marker=go.Marker(
+#                         color='rgb(26, 118, 255)'
+#                     )
+#                 )
+#             ],
+#             layout=go.Layout(
+#                 title='US Export of Plastic Scrap',
+#                 showlegend=True,
+#                 legend=go.Legend(
+#                     x=0,
+#                     y=1.0
+#                 ),
+#                 margin=go.Margin(l=40, r=0, t=40, b=30)
+#             )
+#         )
+#     )
 ])

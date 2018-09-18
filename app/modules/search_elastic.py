@@ -1,5 +1,7 @@
 from pyes import *
+from collections import Counter
 from elasticsearch import Elasticsearch
+from elasticsearch import helpers
 import pandas as pd
 from nltk.corpus import wordnet, stopwords
 import operator, requests
@@ -7,8 +9,9 @@ from pymongo import MongoClient
 from xml.etree import ElementTree
 import string
 
-client = MongoClient('localhost:4321')
+client = MongoClient('localhost:27017')
 db = client.pub
+db_reddit=client.reddit_drug
 
 es = Elasticsearch([{'host': 'localhost', 'port': 9200}])
 
@@ -25,6 +28,10 @@ if tud_demo:
     entities_index = 'entities_tud'
 
 stopword_list = set(stopwords.words('english'))
+expansion = ['although', 'emmanuel', 'gonzalez', 'jeffrey', 'whereas', 'keyword', 'keywords', 'ieee', 'wang']
+for word in expansion:
+    stopword_list.add(word)
+stopword_list = list(stopword_list)
 
 
 # full-textsearch
@@ -76,10 +83,13 @@ def dosearch(_string):
                 }
             }
         }
-    _search_author = es.search(index=publications_index, doc_type="publications", body=_query_author)
+    _search_author = es.search(index=publications_index, doc_type="publications", body=_query_author, size=1000)
     for doc in _search_author['hits']['hits']:
         title_list.append(doc['_source']['title'])
-        journal_list.append(doc['_source']['journal'])
+        if doc['_source']['journal'] == 'arxiv':
+            journal_list.append(doc['_source']['keywords'][0])
+        else:
+            journal_list.append(doc['_source']['journal'])
         year_list.append(doc['_source']['year'])
         id_list.append(doc['_id'])
 
@@ -88,8 +98,6 @@ def dosearch(_string):
             authors_list.append(authors)
         else:
             authors_list.append(doc['_source']['authors'])
-
-    print('1', authors_list)
 
     _query_author = {"query": {
         "query_string":
@@ -109,7 +117,10 @@ def dosearch(_string):
         if any(_string.lower() in s for s in list_authors):
             if (doc['_source']['title']) not in title_list:
                 title_list.append(doc['_source']['title'])
-                journal_list.append(doc['_source']['journal'])
+                if doc['_source']['journal'] == 'arxiv':
+                    journal_list.append(doc['_source']['keywords'][0])
+                else:
+                    journal_list.append(doc['_source']['journal'])
                 year_list.append(doc['_source']['year'])
                 id_list.append(doc['_id'])
 
@@ -118,8 +129,6 @@ def dosearch(_string):
                     authors_list.append(authors)
                 else:
                     authors_list.append(doc['_source']['authors'])
-
-    print('2', authors_list)
 
     if len(_string.split()) > 2:
         _query_title = {
@@ -136,7 +145,11 @@ def dosearch(_string):
             if (doc['_source']['title']) not in title_list:
                 title_list.append(doc['_source']['title'])
                 journal_list.append(doc['_source']['journal'])
-                year_list.append(doc['_source']['year'])
+                if doc['_source']['journal'] == 'arxiv':
+                    journal_list.append(doc['_source']['keywords'][0])
+                else:
+                    journal_list.append(doc['_source']['journal'])
+                year_list.append(int(doc['_source']['year'].strip()))
                 id_list.append(doc['_id'])
 
                 if tud_demo:
@@ -144,8 +157,6 @@ def dosearch(_string):
                     authors_list.append(authors)
                 else:
                     authors_list.append(doc['_source']['authors'])
-
-    print('3', authors_list)
 
     _query_all = {
         'query': {
@@ -178,6 +189,10 @@ def dosearch(_string):
             if first_flag:
                 dict['title'] = [doc['_source']['title']]
                 dict['journal'] = [doc['_source']['journal']]
+                if doc['_source']['journal'] == 'arxiv':
+                    dict['journal'] = [doc['_source']['keywords'][0]]
+                else:
+                    dict['journal'] = [doc['_source']['journal']]
                 dict['year'] = [doc['_source']['year']]
                 dict['content'] = [doc['_source']['content']]
                 if tud_demo:
@@ -190,7 +205,10 @@ def dosearch(_string):
             else:
                 if (doc['_source']['title']) not in title_list:
                     title_list.append(doc['_source']['title'])
-                    journal_list.append(doc['_source']['journal'])
+                    if doc['_source']['journal'] == 'arxiv':
+                        journal_list.append(doc['_source']['keywords'][0])
+                    else:
+                        journal_list.append(doc['_source']['journal'])
                     year_list.append(doc['_source']['year'])
                     id_list.append(doc['_id'])
                     if tud_demo:
@@ -215,10 +233,11 @@ def popular_upcoming_entities(paper_id_list):
         _query_terms = {
             "query": {
                 "bool": {
-                    "must": [{"match": {'paper_id': paper}},
-                             {"match": {'experiment': 'fullcorpusCRF_1cycle_fullcorpusWord2vec'}}],
+                    "must": [{"match": {'paper_id': paper}}],
+#                              {"match": {'experiment': 'fullcorpusCRF_1cycle_fullcorpusWord2vec'}}],
                     "must_not": [{"match": {'annotator': 'noise'}},
-                                 {"match": {'annotator': 'other'}}],
+                                 {"match": {'annotator': 'other'}},
+                                 {"match": {'in_wordnet': 1}}],
                     "should": [{"match": {"annotator": 'method'}},
                                {"match": {"annotator": 'dataset'}}]
                 }
@@ -228,21 +247,22 @@ def popular_upcoming_entities(paper_id_list):
         _query_terms = es.search(index=entities_index, doc_type="entities", body=_query_terms)
 
         for hit in _query_terms['hits']['hits']:
-            entity = hit['_source']['lower']
+            entity = hit['_source']['word']
             entity_words = entity.split()
-            if len(entity_words) == 1 and not wordnet.synsets(entity.lower()) and entity.lower not in stopword_list:
+            if len(entity_words) == 1 and not wordnet.synsets(entity.lower()) and entity.lower() not in stopword_list:
                 terms_in_results.append(entity)
                 terms_labels[entity] = hit
             else:
                 x = 0
                 for word in entity_words:
-                    if (wordnet.synsets(word.lower())) or word.lower in stopword_list:
+                    if (wordnet.synsets(word.lower())) or word.lower() in stopword_list:
                         x = x + 1
                 if x / len(entity_words) < 0.5:
                     terms_in_results.append(entity)
                     terms_labels[entity] = hit
 
-    terms_in_results = list(set(terms_in_results))
+    terms_in_results_t = list(set(terms_in_results))
+    terms_in_results = [entity for entity in terms_in_results_t if not wordnet.synsets(entity.lower()) and entity.lower() not in stopword_list]
 
     for entity in terms_in_results:
         _query_occurrences = {
@@ -327,21 +347,24 @@ def search_by_id(_string):
             }
         }
     }
+    
     # do the query by matching the string from fulltext
-
     _search = es.search(index=publications_index, doc_type="publications", body=_query_all)
     # _search_abs = es.search(index="surfall", doc_type="pubs", body=_query_all)
     _search_entities = es.search(index=entities_index, doc_type="entities", body=_query_entities)
 
     for doc in _search['hits']['hits']:
         title_list.append(doc['_source']['title'])
-        journal_list.append(doc['_source']['journal'])
+        if doc['_source']['journal'] == 'arxiv':
+            journal_list.append(doc['_source']['keywords'][0])
+        else:
+            journal_list.append(doc['_source']['journal'])
         year_list.append(doc['_source']['year'])
         authors_list.append(doc['_source']['authors'])
         id_list.append(doc['_id'])
         abstract_list.append(doc['_source']['abstract'])
-        if tud_demo:
-            reference_list.append(doc['_source']['references'])
+#         if tud_demo:
+        reference_list.append(doc['_source']['references'])
 
     # for doc in _search_abs['hits']['hits']:
     #     abstract_list.append(doc['_source']['abstract'])
@@ -359,9 +382,13 @@ def search_by_id(_string):
         if doc['_source']['annotator'] == 'method':
             method_entities.append(doc['_source']['word'])
             continue
-
-        print(doc['_source']['word'])
-
+            
+        my_word = doc['_source']['word']
+        if wordnet.synsets(my_word.lower()) or my_word.lower() in stopword_list:
+            continue
+        
+        my_word = ' '.join([t for t in my_word.split() if t not in stopword_list])
+            
         method_score = 0
         dataset_score = 0
 
@@ -384,7 +411,7 @@ def search_by_id(_string):
                 all_amb.append(doc['_source']['word'])
 
         my_word = doc['_source']['word']
-        if not wordnet.synsets(my_word.lower()):
+        if not wordnet.synsets(my_word.lower()) and my_word.lower not in stopword_list:
             my_word = my_word.split()
             final_word = ''
             if len(my_word) > 1:
@@ -420,8 +447,39 @@ def search_by_id(_string):
         if doc['_source']['annotator'] == 'method':
             method_entities.append(doc['_source']['word'])
 
-    method_entities = list(set(method_entities))
-    dataset_entities = list(set(dataset_entities))
+    ambig_entities = list(set(all_amb))
+    
+    for entity in ambig_entities:
+        labels= []
+        for doc in helpers.scan(es, index="entities_smartpub", query={"query": {"query_string": {"query": _string}}}, size=50):
+            labels.append(doc['_source']['label'])
+        count = Counter(labels)
+        if count.most_common(1)[0][0] == 'method':
+            method_entities.append(entity)
+        else:
+            dataset_entities.append(entity)
+            
+    m_entities = list(set(method_entities))
+    method_entities = []
+    for e in m_entities:
+        word = ' '.join([t for t in e.split() if t not in stopword_list])
+        if len(word) > 1:
+            method_entities.append(word)
+            
+    d_entities = list(set(dataset_entities))
+    dataset_entities = []
+    for e in d_entities:
+        word = ' '.join([t for t in e.split() if t not in stopword_list])
+        if len(word) > 1:
+            dataset_entities.append(word)
+            
+    a_entities = list(set(all_amb))
+    all_amb = []
+    for e in a_entities:
+        word = ' '.join([t for t in e.split() if t not in stopword_list])
+        if len(word) > 1:
+            all_amb.append(word)
+    
     print('ds', dataset_entities, 'mt', method_entities, 'all', all_amb)
     return id_list, title_list, journal_list, year_list, authors_list, abstract_list, method_entities, dataset_entities, all_amb
 
@@ -460,7 +518,10 @@ def search_by_author(_string):
 
     for doc in _search_author['hits']['hits']:
         title_list.append(doc['_source']['title'])
-        journal_list.append(doc['_source']['journal'])
+        if doc['_source']['journal'] == 'arxiv':
+            journal_list.append(doc['_source']['keywords'][0])
+        else:
+            journal_list.append(doc['_source']['journal'])
         year_list.append(doc['_source']['year'])
         id_list.append(doc['_id'])
         if tud_demo:
@@ -468,6 +529,7 @@ def search_by_author(_string):
             authors_list.append(authors)
         else:
             authors_list.append(doc['_source']['authors'])
+        reference_list.append(doc['_source']['references'])
 
     for _id in id_list:
         _query_entities = {
@@ -481,9 +543,12 @@ def search_by_author(_string):
         _search_entities = es.search(index=entities_index, doc_type="entities", body=_query_entities)
 
         for doc in _search_entities['hits']['hits']:
-            wordcloud = wordcloud + doc['_source']['word'].lower() + ' '
-
-    print('this', wordcloud)
+            entity = doc['_source']['word']
+            if not wordnet.synsets(entity.lower()) and entity.lower() not in stopword_list:
+                ent = '_'.join([w for w in doc['_source']['word'].strip().split() if len(w) > 1 and w.lower() not in stopword_list])
+                wordcloud = wordcloud + ent + ' '
+#                 wordcloud = wordcloud + entity.lower() + ' '
+            
     return id_list, title_list, journal_list, year_list, authors_list, wordcloud
 
 
@@ -503,15 +568,15 @@ def word_cloud_for_first_page(id_list, search_text):
         for doc in _search_entities['hits']['hits']:
             if doc['_source']['inwordNet'] != 1:
                 entity = doc['_source']['word'].lower()
-                entity = ''.join(c for c in entity if c not in string.punctuation)
-                if entity != 'trec' and entity not in search_text:
+                entity = ''.join(c for c in entity if c not in string.punctuation and c not in stopword_list)
+                if entity != 'trec' and entity not in search_text and not wordnet.synsets(entity.lower()):
                     splitted_entity = entity.split()
                     if len(splitted_entity) > 1:
                         # entity = ''.join(c for c in entity if c not in stopwords.words('english'))
                         entity = ' '.join(c for c in splitted_entity if c not in stopword_list)
                         # entity = ps.stem(entity)
                     wordcloud = wordcloud + entity + ';'
-
+                    
     return wordcloud
 
 
@@ -520,25 +585,14 @@ def search_by_entity(_string):
     data2 = []
     top_entities = []
     data_final = []
-
     entity_list = []
-
     papers = []
-    _query_entities = {"query": {
-        "query_string":
-            {
-                "query": _string
-
-            }
-    }}
-    # do the query by matching the string from fulltext
-
-    _search_entities = es.search(index=entities_index, doc_type="entities", body=_query_entities, size=10000)
-
-    for doc in _search_entities['hits']['hits']:
-        # print(doc)
+    
+    for doc in helpers.scan(es, index=entities_index, query={"query": {"query_string": {"query": _string}}}, size=50):
         papers.append(doc['_source']['paper_id'])
+        
     papers = list(set(papers))
+    
     for paper in papers:
         _query_entities = {
             'query': {
@@ -551,9 +605,9 @@ def search_by_entity(_string):
 
         for doc in _search_entities['hits']['hits']:
             entity_list = []
-            # print(doc['_source']['paper_id'])
-            # papers.append(doc['_source']['paper_id'])
-            data.append([doc['_source']['word'].lower(), doc['_source']['year']])
+            entity = doc['_source']['word'].lower()
+            if not wordnet.synsets(entity.lower()) and entity.lower() not in stopword_list:
+                data.append([entity, doc['_source']['year']])
 
     df = pd.DataFrame(data, columns=['key', 'date'])
     df1 = df.groupby(['key']).size().reset_index(name="value")
@@ -561,9 +615,11 @@ def search_by_entity(_string):
     top_entities.append(_string.lower())
     for dd in df1['key']:
         top_entities.append(dd)
+        
     for i, dd in enumerate(df['key']):
         if dd in top_entities:
             data2.append([dd, df['date'][i]])
+            
     top_entities = list(set(top_entities))
     # df=df.groupby(['key','date']).size().reset_index(name="value")
     # df.to_csv('/Users/sepidehmesbah/Downloads/ScholarSurf/app/static/files/data2.csv', sep=',')
@@ -661,20 +717,18 @@ def filter_by_conf(mystring):
 
 def wordcloud_entity(_string):
     popular = ''
-
     papers = []
+    
     _query_entities = {"query": {
         "query_string":
             {
                 "query": _string
             }
     }}
-    # do the query by matching the string from fulltext
-
+    
     _search_entities = es.search(index=entities_index, doc_type="entities", body=_query_entities, size=10000)
 
     for doc in _search_entities['hits']['hits']:
-        # print(doc)
         papers.append(doc['_source']['paper_id'])
     papers = list(set(papers))
     for paper in papers:
@@ -685,14 +739,17 @@ def wordcloud_entity(_string):
                 }
             }
         }
-        _search_entities = es.search(index=entities_index, doc_type="entities", body=_query_entities, size=1000)
-
+        
+        _search_entities = es.search(index=entities_index, doc_type="entities", body=_query_entities, size=100)
         for doc in _search_entities['hits']['hits']:
-            entity_list = []
-            # print(doc['_source']['paper_id'])
-            # papers.append(doc['_source']['paper_id'])
-            if _string.lower() not in doc['_source']['word'].lower():
-                popular = popular + doc['_source']['word'].lower() + ' '
+            entity = doc['_source']['word']
+            if not wordnet.synsets(entity.lower()) and entity.lower() not in stopword_list:
+                entity_list = []
+                if _string.lower() not in doc['_source']['word'].lower():
+                    ent = '_'.join([w for w in doc['_source']['word'].strip().split() if len(w) > 1 and w.lower() not in stopword_list])
+#                     popular = popular + doc['_source']['word'] + ' '
+                    popular = popular + ent + ' '
+                    
     return popular
 
 
@@ -700,26 +757,29 @@ def filter_by_pie(_string):
     popular = ''
 
     data = []
-    _query_entities = {"query": {
-        "query_string":
-            {
-                "query": _string
-
-            }
-    }}
-    # do the query by matching the string from fulltext
-
-    _search_entities = es.search(index=entities_index, doc_type="entities", body=_query_entities, size=10000)
-
-    for doc in _search_entities['hits']['hits']:
-        # print(doc)
-        temp = doc['_source']['paper_id']
-        temp = temp.split('_')
-        data.append(temp[1])
+    _query_entities = {"query": 
+                           {"query_string":
+                                {
+                                    "query": _string
+                                }
+                            }
+                        }
+    
+#     # do the query by matching the string from fulltext, then find the paper by id
+#     _search_entities = es.search(index='entities_smartpub', doc_type="entities", body=_query_entities, size=100)
+#     for doc in _search_entities['hits']['hits']:
+        
+    for doc in helpers.scan(es, index="entities_smartpub", query={"query": {"query_string": {"query": _string}}}, size=50):
+        _id = doc['_source']['paper_id']
+        _search_papers = es.search(index='smartpub', doc_type="publications", body={"query":{"match":{"_id":{"query" : _id}}}}, size=1)
+        for doc in _search_papers['hits']['hits']:
+            topic = doc['_source']['keywords'][0] 
+            topic = topic.split(' - ')[-1]
+            data.append(topic)
 
     df = pd.DataFrame(data, columns=['conference'])
     df1 = df.groupby(['conference']).size().reset_index(name="confnum")
-    df1 = df1.sort_values(['confnum'], ascending=False).head(7)
+    df1 = df1.sort_values(['confnum'], ascending=False).head(6)
     return df1
 
 
@@ -754,7 +814,10 @@ def dosearch_entity(_string):
         for doc in _search['hits']['hits']:  # Secondly, put the matches from the fullcontent in the list1
 
             title_list.append(doc['_source']['title'])
-            journal_list.append(doc['_source']['journal'])
+            if doc['_source']['journal'] == 'arxiv':
+                journal_list.append(doc['_source']['keywords'][0])
+            else:
+                journal_list.append(doc['_source']['journal'])
             year_list.append(doc['_source']['year'])
             authors_list.append(doc['_source']['authors'])
             id_list.append(doc['_id'])
@@ -840,8 +903,16 @@ def update_db_crowdsourcing(entity, label):
 
 
 def dashboard():
-
     publications = []
     entities = []
-
     return publications, entities
+
+def select_reddit_post():
+    reddit = db_reddit.temp_reddit.find_one(no_cursor_timeout=True)
+    return reddit['text'], reddit['post_id']
+
+def add_annotation(post_id, label):
+    db_reddit.reddit_annotation.insert({'post_id': post_id, 'Annotator': 1, 'ADR':label})
+
+def remove_temp(post_id):
+    db_reddit.temp_reddit.remove({"post_id": post_id})

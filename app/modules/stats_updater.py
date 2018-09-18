@@ -1,7 +1,13 @@
 import pandas as pd
 import time
+import pytz
+from datetime import datetime
 from elasticsearch import Elasticsearch
 from elasticsearch import helpers
+import sys
+import os
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 es = Elasticsearch(
     [{'host': 'localhost', 'port': 9200}], timeout=30, max_retries=10, retry_on_timeout=True
@@ -14,7 +20,7 @@ stats = []
 start = time.time()
 
 for publication in publications:
-    res = es.search(index="smartpub", body={"query": {"match": {"journal": {"query": publication}}}}, size=1)
+    res = es.search(index="smartpub", body={"query": {"match": {"journal": {"query": publication}}}}, size=500)
     total_docs = res['hits']['total']
     print(total_docs)
 
@@ -27,9 +33,10 @@ for publication in publications:
         values.append(len(text))
         values.append(len(abstract))
         values.append(int(doc['_source']['year']))
+        values.append(doc['_source']['keywords'][0])
         stats.append(values)
 
-pub_stats = pd.DataFrame(stats, columns=['id', 'content', 'abstract', 'year'])
+pub_stats = pd.DataFrame(stats, columns=['id', 'content', 'abstract', 'year', 'keywords'])
 print((time.time() - start) / 60, 'for first dataframe')
 e_stats = []
 
@@ -39,7 +46,7 @@ for publication in publications:
     print(total_docs)
 
     for doc in helpers.scan(es, index="entities_smartpub",
-                            query={"query": {"match": {"journal": {"query": publication}}}}, size=50):
+                            query={"query": {"match": {"journal": {"query": publication}}}}, size=500):
         values = []
         word = doc['_source']['lower']
         label = doc['_source']['label']
@@ -55,5 +62,11 @@ entity_stats = pd.DataFrame(e_stats, columns=['word', 'paper_id', 'label', 'anno
 clean_stats = entity_stats.loc[(entity_stats['annotation'].isin(['dataset', 'method', 'undefined']))]
 print((time.time() - start) / 60, 'for second dataframe')
 
-clean_stats.to_pickle('stats_pickles/clean_stats.pkl')
-pub_stats.to_pickle('stats_pickles/pub_stats.pkl')
+entity_stats.to_pickle('/data2/SmartPub/app/modules/stats_pickles/entity_stats.pkl')
+clean_stats.to_pickle('/data2/SmartPub/app/modules/stats_pickles/clean_stats.pkl')
+pub_stats.to_pickle('/data2/SmartPub/app/modules/stats_pickles/pub_stats.pkl')
+
+date = datetime.now(pytz.utc)
+f = open('/data2/SmartPub/app/modules/stats_pickles/update_log.txt', 'a')
+f.write('\n'+str(date))
+f.close()
