@@ -1,3 +1,7 @@
 *.pkl
 app/__pycache__
+app/__pycache__/
 app/modules/__pycache__
+app/modules/__pycache__/
+smartpub_env
+smartpub_env/

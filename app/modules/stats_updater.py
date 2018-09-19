@@ -43,7 +43,7 @@ e_stats = []
 for publication in publications:
     res = es.search(index="entities_smartpub", body={"query": {"match": {"journal": {"query": publication}}}}, size=1)
     total_docs = res['hits']['total']
-    print(total_docs)
+    print(total_docs, 'entities to process')
 
     for doc in helpers.scan(es, index="entities_smartpub",
                             query={"query": {"match": {"journal": {"query": publication}}}}, size=500):

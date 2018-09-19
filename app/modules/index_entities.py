@@ -1,7 +1,9 @@
+import nltk
+import re
+
 from pymongo import MongoClient
 from elasticsearch import Elasticsearch
 from elasticsearch import helpers
-import nltk
 from nltk.corpus import stopwords, wordnet
 
 sent_detector = nltk.data.load('tokenizers/punkt/english.pickle')
@@ -13,23 +15,24 @@ es = Elasticsearch(
 )
 es.cluster.health(wait_for_status='yellow', request_timeout=1)
 
+def is_number(s):
+    try:
+        float(s)
+        return True
+    except ValueError:
+        return False
 
 def token_stopword_filter(word: str):
-    filtered_word = word.strip()
-    tokens = word.split()
-    if len(tokens) > 1 and tokens[-1] in stopwords.words('english'):
-        filtered_word = ' ' .join(tokens[:-1])
-    tokens = filtered_word.split()
-    if len(tokens) > 1 and tokens[0] in stopwords.words('english'):
-        filtered_word = ' ' .join(tokens[1:])
+    filtered_word = ' '.join([t for t in word.split() if not is_number(t) and t not in stopwords.words('english')]) 
+    filtered_word = re.sub(r'\[[^)]*\]', '', filtered_word)
     return filtered_word
 
 filter_publications = ['arxiv']
 existing_ids = []
-for publication in filter_publications:
-    query={"query": {"match": {"journal": {"query": publication}}}}
-    for doc in helpers.scan(es, index="entities_smartpub", query=query, size=50):
-        existing_ids.append(doc['_id'])
+# for publication in filter_publications:
+#     query={"query": {"match": {"journal": {"query": publication}}}}
+#     for doc in helpers.scan(es, index="entities_smartpub", query=query, size=500):
+#         existing_ids.append(doc['_id'])
         
 print(len(existing_ids), 'entities already in index')
 

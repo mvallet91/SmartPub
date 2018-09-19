@@ -422,14 +422,9 @@ def search_by_id(_string):
     ambig_entities = list(set(all_amb))
 
     for entity in ambig_entities:
-<<<<<<< HEAD
-        labels= []
-        for doc in helpers.scan(es, index=entities_index, query={"query": {"query_string": {"query": _string}}}, size=50):
-=======
         labels = []
         for doc in helpers.scan(es, index=entities_index, query={"query": {"query_string": {"query": _string}}},
                                 size=50):
->>>>>>> 7b1b44c8df7512415c0abb145fdf37ba10c8a3d7
             labels.append(doc['_source']['label'])
         count = Counter(labels)
         if count.most_common(1)[0][0] == 'method':
@@ -525,8 +520,7 @@ def search_by_author(_string):
             if not wordnet.synsets(entity.lower()) and entity.lower() not in stopword_list:
                 ent = '_'.join([w for w in doc['_source']['word'].strip().split() if
                                 len(w) > 1 and w.lower() not in stopword_list])
-                wordcloud = wordcloud + ent + ' '
-    #                 wordcloud = wordcloud + entity.lower() + ' '
+                wordcloud = wordcloud + ent.strip() + ' '
 
     return id_list, title_list, journal_list, year_list, authors_list, wordcloud
 
@@ -687,10 +681,6 @@ def filter_by_conf(mystring):
 def wordcloud_entity(_string):
     popular = ''
     papers = []
-<<<<<<< HEAD
-=======
-
->>>>>>> 7b1b44c8df7512415c0abb145fdf37ba10c8a3d7
     _string = ' '.join(_string.split('%20'))
     query = {"query": {"match_phrase": {"word": _string}}}
     for doc in helpers.scan(es, index=entities_index, query=query, size=1000):
@@ -711,10 +701,9 @@ def wordcloud_entity(_string):
             if not wordnet.synsets(entity.lower()) and entity.lower() not in stopword_list:
                 entity_list = []
                 if _string.lower() not in doc['_source']['word'].lower():
-                    ent = '_'.join([w.strip() for w in doc['_source']['word'].strip().split() if
+                    ent = '_'.join([w.strip() for w in doc['_source']['word'].split() if
                                     len(w) > 1 and w.lower() not in stopword_list])
-                    #                     popular = popular + doc['_source']['word'] + ' '
-                    popular = popular + ent + ' '
+                    popular = popular + ent.strip() + ' '
 
     return popular
 
@@ -740,11 +729,7 @@ def filter_by_pie(_string):
 
 def dosearch_entity(_string):
     _string = ' '.join(_string.split('%20'))
-<<<<<<< HEAD
-    dict = {}
-=======
     query_dict = {}
->>>>>>> 7b1b44c8df7512415c0abb145fdf37ba10c8a3d7
     title_list = []
     journal_list = []
     year_list = []
@@ -773,11 +758,7 @@ def dosearch_entity(_string):
             year_list.append(doc['_source']['year'])
             authors_list.append(doc['_source']['authors'])
             id_list.append(doc['_id'])
-<<<<<<< HEAD
-            # dict['content'].append(doc['_source']['content'])
-=======
             # query_dict['content'].append(doc['_source']['content'])
->>>>>>> 7b1b44c8df7512415c0abb145fdf37ba10c8a3d7
         # list1.append(_search['hits']['hits'][j]['_source']['jou'])
     return id_list, title_list, journal_list, year_list, authors_list
 

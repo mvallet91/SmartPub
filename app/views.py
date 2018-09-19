@@ -196,8 +196,6 @@ def annotation_ambigious():  # after pressing the search button
 
     if request.method == 'GET':
         return flask.render_template("annotations.html", sentences=sentences)
-    #         return flask.render_template("annotations.html", sentences='this is a test sentence')
-
     if request.method == 'POST':
         try:
             name1 = request.form['seltext']
@@ -207,36 +205,29 @@ def annotation_ambigious():  # after pressing the search button
             pass
         try:
             next_button = request.form["next_button"]
-
             if next_button:
                 search_elastic.remove_temp(post_id)
                 sentences, post_id = search_elastic.select_reddit_post()
         except:
             pass
-
-        # return redirect(url_for('annotation_ambigious'))
         return flask.render_template("annotations.html", sentences=sentences)
 
 
-<<<<<<< HEAD
-dashboard = dash.Dash(__name__, server=app, url_base_pathname='/dashapp')
-
+dashboard = dash.Dash(__name__, server=app, url_base_pathname='/dashapp/', csrf_protect=False)
 clean_stats = pd.read_pickle('/data2/SmartPub/app/modules/stats_pickles/clean_stats.pkl')
 entity_stats = pd.read_pickle('/data2/SmartPub/app/modules/stats_pickles/entity_stats.pkl')
 pub_stats = pd.read_pickle('/data2/SmartPub/app/modules/stats_pickles/pub_stats.pkl')
-=======
-dashboard = dash.Dash(__name__, server=app, url_base_pathname='/dashapp/')
 
-clean_stats = pd.read_pickle('app/modules/stats_pickles/clean_stats.pkl')
-entity_stats = pd.read_pickle('app/modules/stats_pickles/entity_stats.pkl')
-pub_stats = pd.read_pickle('app/modules/stats_pickles/pub_stats.pkl')
->>>>>>> 7b1b44c8df7512415c0abb145fdf37ba10c8a3d7
+# dashboard = dash.Dash(__name__, server=app, url_base_pathname='/dashapp/')
+# clean_stats = pd.read_pickle('app/modules/stats_pickles/clean_stats.pkl')
+# entity_stats = pd.read_pickle('app/modules/stats_pickles/entity_stats.pkl')
+# pub_stats = pd.read_pickle('app/modules/stats_pickles/pub_stats.pkl')
 
 summary = clean_stats.groupby(['label', 'annotation'])['word'].count()
 summary = summary.reset_index()
 summary.columns = ['NER Label', 'Human Annotation', 'Count']
 
-with open('app/modules/stats_pickles/update_log.txt', 'r') as f:
+with open('/data2/SmartPub/app/modules/stats_pickles/update_log.txt', 'r') as f:
     dates = f.readlines()
 
 total_pub = len(pub_stats)
@@ -351,7 +342,8 @@ dashboard.layout = html.Div(children=[
                 layout=go.Layout(
                     title='Primary Topic of Publications',
                     showlegend=False,
-                    margin=go.layout.Margin(
+#                     margin=go.layout.Margin(
+                    margin=go.Margin(
                         l=5,
                         r=5,
                         b=10,
@@ -389,7 +381,8 @@ dashboard.layout = html.Div(children=[
             layout=go.Layout(
                 title='Entities & Publications per Year',
                 showlegend=True,
-                legend=go.layout.Legend(
+#                 legend=go.layout.Legend(
+                legend=go.Legend(
                     x=0,
                     y=1.0
                 ),
