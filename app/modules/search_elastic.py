@@ -429,7 +429,7 @@ def search_by_id(_string):
     
     for entity in ambig_entities:
         labels= []
-        for doc in helpers.scan(es, index="entities_smartpub", query={"query": {"query_string": {"query": _string}}}, size=50):
+        for doc in helpers.scan(es, index=entities_index, query={"query": {"query_string": {"query": _string}}}, size=50):
             labels.append(doc['_source']['label'])
         count = Counter(labels)
         if count.most_common(1)[0][0] == 'method':
@@ -565,12 +565,13 @@ def search_by_entity(_string):
     data_final = []
     entity_list = []
     papers = []
-    
-    for doc in helpers.scan(es, index=entities_index, query={"query": {"query_string": {"query": _string}}}, size=50):
+    _string = ' '.join(_string.split('%20'))
+    query = {"query": {"match_phrase": {"word": _string}}}
+    for doc in helpers.scan(es, index=entities_index, query=query, size=1000):
         papers.append(doc['_source']['paper_id'])
-        
+
     papers = list(set(papers))
-    
+
     for paper in papers:
         _query_entities = {
             'query': {
@@ -579,7 +580,7 @@ def search_by_entity(_string):
                 }
             }
         }
-        _search_entities = es.search(index=entities_index, doc_type="entities", body=_query_entities, size=1000)
+        _search_entities = es.search(index=entities_index, doc_type="entities", body=_query_entities, size=20)
 
         for doc in _search_entities['hits']['hits']:
             entity_list = []
@@ -593,14 +594,12 @@ def search_by_entity(_string):
     top_entities.append(_string.lower())
     for dd in df1['key']:
         top_entities.append(dd)
-        
+
     for i, dd in enumerate(df['key']):
         if dd in top_entities:
             data2.append([dd, df['date'][i]])
-            
+
     top_entities = list(set(top_entities))
-    # df=df.groupby(['key','date']).size().reset_index(name="value")
-    # df.to_csv('/Users/sepidehmesbah/Downloads/ScholarSurf/app/static/files/data2.csv', sep=',')
     df2 = pd.DataFrame(data2, columns=['key', 'date'])
     df2 = df2.groupby(['key', 'date']).size().reset_index(name="value")
     df4 = df2.set_index(['key', 'date'])
@@ -613,7 +612,6 @@ def search_by_entity(_string):
     frames = [df2, df_final]
     result = pd.concat(frames)
     result = result.sort_values(['key', 'date'], ascending=True)
-    # result.to_csv('/Users/sepidehmesbah/Downloads/ScholarSurf/app/static/files/data2.csv', sep=',')
     return result
 
 
@@ -639,8 +637,6 @@ def filter_by_conf(mystring):
 
             }
     }}
-    # do the query by matching the string from fulltext
-
     _search_entities = es.search(index=entities_index, doc_type="entities", body=_query_entities, size=10000)
 
     for doc in _search_entities['hits']['hits']:
@@ -696,17 +692,9 @@ def filter_by_conf(mystring):
 def wordcloud_entity(_string):
     popular = ''
     papers = []
-    
-    _query_entities = {"query": {
-        "query_string":
-            {
-                "query": _string
-            }
-    }}
-    
-    _search_entities = es.search(index=entities_index, doc_type="entities", body=_query_entities, size=10000)
-
-    for doc in _search_entities['hits']['hits']:
+    _string = ' '.join(_string.split('%20'))
+    query = {"query": {"match_phrase": {"word": _string}}}
+    for doc in helpers.scan(es, index=entities_index, query=query, size=1000):
         papers.append(doc['_source']['paper_id'])
     papers = list(set(papers))
     for paper in papers:
@@ -717,41 +705,31 @@ def wordcloud_entity(_string):
                 }
             }
         }
-        
+
         _search_entities = es.search(index=entities_index, doc_type="entities", body=_query_entities, size=100)
         for doc in _search_entities['hits']['hits']:
             entity = doc['_source']['word']
             if not wordnet.synsets(entity.lower()) and entity.lower() not in stopword_list:
                 entity_list = []
                 if _string.lower() not in doc['_source']['word'].lower():
-                    ent = '_'.join([w for w in doc['_source']['word'].strip().split() if len(w) > 1 and w.lower() not in stopword_list])
-#                     popular = popular + doc['_source']['word'] + ' '
+                    ent = '_'.join([w.strip() for w in doc['_source']['word'].strip().split() if
+                                    len(w) > 1 and w.lower() not in stopword_list])
+                    #                     popular = popular + doc['_source']['word'] + ' '
                     popular = popular + ent + ' '
-                    
+
     return popular
 
 
 def filter_by_pie(_string):
-    popular = ''
-
     data = []
-    _query_entities = {"query": 
-                           {"query_string":
-                                {
-                                    "query": _string
-                                }
-                            }
-                        }
-    
-#     # do the query by matching the string from fulltext, then find the paper by id
-#     _search_entities = es.search(index='entities_smartpub', doc_type="entities", body=_query_entities, size=100)
-#     for doc in _search_entities['hits']['hits']:
-        
-    for doc in helpers.scan(es, index="entities_smartpub", query={"query": {"query_string": {"query": _string}}}, size=50):
-        _id = doc['_source']['paper_id']
-        _search_papers = es.search(index='smartpub', doc_type="publications", body={"query":{"match":{"_id":{"query" : _id}}}}, size=1)
-        for doc in _search_papers['hits']['hits']:
-            topic = doc['_source']['keywords'][0] 
+    _string = ' '.join(_string.split('%20'))
+    query = {"query": {"match_phrase": {"word": _string}}}
+    for doc in helpers.scan(es, index=entities_index, query=query, size=7000):
+        paper_id = doc['_source']['paper_id']
+        _search_papers = es.search(index=publications_index, doc_type="publications",
+                                   body={"query": {"match_phrase": {"_id": {"query": paper_id}}}}, size=1)
+        for paper in _search_papers['hits']['hits']:
+            topic = paper['_source']['keywords'][0]
             topic = topic.split(' - ')[-1]
             data.append(topic)
 
@@ -762,6 +740,7 @@ def filter_by_pie(_string):
 
 
 def dosearch_entity(_string):
+    _string = ' '.join(_string.split('%20'))
     dict = {}
     title_list = []
     journal_list = []
@@ -776,21 +755,13 @@ def dosearch_entity(_string):
             }
         }
     }
-    # #do the query by matching the string from fulltext
-    # do the query by matching the string with the dataset fields which are generated by NER
     _search = es.search(index=publications_index, doc_type="publications", body=_query_all, size=30)
 
     context = {}
     list1 = []
 
-    i = 0
-    j = 0
-    first_flag = True
-    flag2 = 0
-
     if _search is not None:
         for doc in _search['hits']['hits']:  # Secondly, put the matches from the fullcontent in the list1
-
             title_list.append(doc['_source']['title'])
             if doc['_source']['journal'] == 'arxiv':
                 journal_list.append(doc['_source']['keywords'][0])
@@ -799,11 +770,8 @@ def dosearch_entity(_string):
             year_list.append(doc['_source']['year'])
             authors_list.append(doc['_source']['authors'])
             id_list.append(doc['_id'])
-
             # dict['content'].append(doc['_source']['content'])
-
         # list1.append(_search['hits']['hits'][j]['_source']['jou'])
-
     return id_list, title_list, journal_list, year_list, authors_list
 
 

@@ -183,9 +183,7 @@ def get_d3_updatedata(entity):
 
 @app.route('/my/piedata/<entity>')
 def get_d3_piedata(entity):
-    print(entity)
     df = search_elastic.filter_by_pie(entity)  # Constructed however you need it
-    print(df)
     return df.to_csv()
 
 @app.route('/test')
@@ -241,13 +239,6 @@ def annotation_ambigious():  # after pressing the search button
 
         #return redirect(url_for('annotation_ambigious'))
         return flask.render_template("annotations.html", sentences=sentences)
-
-
-
-# @app.route('/dashboard/')
-# def about():
-#     publications_stats, entities_stats = search_elastic.dashboard()
-#     return render_template('dashboard.html', publications_stats=publications_stats, entities_stats=entities_stats)
 
 
 dashboard = dash.Dash(__name__, server=app, url_base_pathname='/dashapp')
