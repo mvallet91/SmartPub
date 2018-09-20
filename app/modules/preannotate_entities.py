@@ -34,9 +34,14 @@ for rr in entities:
 pub_entities = pub_db.entities.find()
 print('Creating dictionary of expert annotations')
 ann = {}
+for rr in entities:
+    if rr['Annotator'] != 'undefined':
+        ann[rr['word_lower']] = rr['Annotator']
+        
 for rr in pub_entities:
     if rr['Annotator'] != 'undefined':
         ann[rr['word_lower']] = rr['Annotator']
+        
 print('Done with', len(ann), 'entities')
 
 print('Updating Annotations')

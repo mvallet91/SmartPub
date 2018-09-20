@@ -152,7 +152,7 @@ def dosearch(_string):
             }
         }
     }
-    _search = es.search(index=publications_index, doc_type="publications", body=_query_all)
+    _search = es.search(index=publications_index, doc_type="publications", body=_query_all, size=25)
 
     context = {}
     list1 = []
@@ -224,7 +224,7 @@ def popular_upcoming_entities(paper_id_list):
 
         _query_terms = es.search(index=entities_index, doc_type="entities", body=_query_terms)
         for hit in _query_terms['hits']['hits']:
-            entity = hit['_source']['word']
+            entity = hit['_source']['clean']
             entity_words = entity.split()
             if len(entity_words) == 1 and not wordnet.synsets(entity.lower()) and entity.lower() not in stopword_list:
                 terms_in_results.append(entity)
@@ -348,14 +348,14 @@ def search_by_id(_string):
             continue
 
         if doc['_source']['annotator'] == 'dataset':
-            dataset_entities.append(doc['_source']['word'])
+            dataset_entities.append(doc['_source']['clean'])
             continue
 
         if doc['_source']['annotator'] == 'method':
-            method_entities.append(doc['_source']['word'])
+            method_entities.append(doc['_source']['clean'])
             continue
 
-        my_word = doc['_source']['word']
+        my_word = doc['_source']['clean']
         if wordnet.synsets(my_word.lower()) or my_word.lower() in stopword_list:
             continue
 
@@ -368,27 +368,27 @@ def search_by_id(_string):
         if int(doc['_source']['PMIdata']) == 1:
             dataset_score = dataset_score + 1
         if doc['_source']['label'] == 'dataset':
-            if doc['_source']['word'] not in method_amb:
-                dataset_amb.append(doc['_source']['word'])
+            if doc['_source']['clean'] not in method_amb:
+                dataset_amb.append(doc['_source']['clean'])
             else:
-                all_amb.append(doc['_source']['word'])
+                all_amb.append(doc['_source']['clean'])
 
         method_score = method_score + float(doc['_source']['mt_similarity'])
         if int(doc['_source']['PMImethod']) == 1:
             method_score = method_score + 1
         if doc['_source']['label'] == 'method':
-            if doc['_source']['word'] not in dataset_amb:
-                method_amb.append(doc['_source']['word'])
+            if doc['_source']['clean'] not in dataset_amb:
+                method_amb.append(doc['_source']['clean'])
             else:
-                all_amb.append(doc['_source']['word'])
+                all_amb.append(doc['_source']['clean'])
 
-        my_word = doc['_source']['word']
+        my_word = doc['_source']['clean']
         if not wordnet.synsets(my_word.lower()) and my_word.lower not in stopword_list:
             my_word = my_word.split()
             final_word = ''
             if len(my_word) > 1:
                 url = 'http://lookup.dbpedia.org/api/search/KeywordSearch?QueryClass=&QueryString=' + str(
-                    doc['_source']['word'])
+                    doc['_source']['clean'])
                 try:
                     resp = requests.request('GET', url)
                     root = ElementTree.fromstring(resp.content)
@@ -396,7 +396,7 @@ def search_by_id(_string):
                     for child in root.iter('*'):
                         check_if_exist.append(child)
                     if len(check_if_exist) > 1:
-                        final_word = doc['_source']['word']
+                        final_word = doc['_source']['clean']
                 except:
                     for ww in my_word:
                         if not wordnet.synsets(ww.lower()):
@@ -415,9 +415,9 @@ def search_by_id(_string):
             print(final_word, 'm', method_score, 'd', dataset_score)
 
         if doc['_source']['annotator'] == 'dataset':
-            dataset_entities.append(doc['_source']['word'])
+            dataset_entities.append(doc['_source']['clean'])
         if doc['_source']['annotator'] == 'method':
-            method_entities.append(doc['_source']['word'])
+            method_entities.append(doc['_source']['clean'])
 
     ambig_entities = list(set(all_amb))
 
@@ -516,9 +516,9 @@ def search_by_author(_string):
         _search_entities = es.search(index=entities_index, doc_type="entities", body=_query_entities)
 
         for doc in _search_entities['hits']['hits']:
-            entity = doc['_source']['word']
+            entity = doc['_source']['clean']
             if not wordnet.synsets(entity.lower()) and entity.lower() not in stopword_list:
-                ent = '_'.join([w for w in doc['_source']['word'].strip().split() if
+                ent = '_'.join([w for w in doc['_source']['clean'].strip().split() if
                                 len(w) > 1 and w.lower() not in stopword_list])
                 wordcloud = wordcloud + ent.strip() + ' '
 
@@ -540,7 +540,7 @@ def word_cloud_for_first_page(id_list, search_text):
         _search_entities = es.search(index=entities_index, doc_type="entities", body=_query_entities)
         for doc in _search_entities['hits']['hits']:
             if doc['_source']['inwordNet'] != 1:
-                entity = doc['_source']['word'].lower()
+                entity = doc['_source']['clean'].lower()
                 entity = ''.join(c for c in entity if c not in string.punctuation and c not in stopword_list)
                 if entity != 'trec' and entity not in search_text and not wordnet.synsets(entity.lower()):
                     splitted_entity = entity.split()
@@ -579,7 +579,7 @@ def search_by_entity(_string):
 
         for doc in _search_entities['hits']['hits']:
             entity_list = []
-            entity = doc['_source']['word'].lower()
+            entity = doc['_source']['clean'].lower()
             if not wordnet.synsets(entity.lower()) and entity.lower() not in stopword_list:
                 data.append([entity, doc['_source']['year']])
 
@@ -650,7 +650,7 @@ def filter_by_conf(mystring):
         _search_entities = es.search(index=entities_index, doc_type="entities", body=_query_entities, size=5000)
 
         for doc in _search_entities['hits']['hits']:
-            data.append([doc['_source']['word'].lower(), doc['_source']['year']])
+            data.append([doc['_source']['clean'].lower(), doc['_source']['year']])
 
     df = pd.DataFrame(data, columns=['key', 'date'])
     df1 = df.groupby(['key']).size().reset_index(name="value")
@@ -697,11 +697,11 @@ def wordcloud_entity(_string):
 
         _search_entities = es.search(index=entities_index, doc_type="entities", body=_query_entities, size=100)
         for doc in _search_entities['hits']['hits']:
-            entity = doc['_source']['word']
+            entity = doc['_source']['clean']
             if not wordnet.synsets(entity.lower()) and entity.lower() not in stopword_list:
                 entity_list = []
-                if _string.lower() not in doc['_source']['word'].lower():
-                    ent = '_'.join([w.strip() for w in doc['_source']['word'].split() if
+                if _string.lower() not in doc['_source']['clean'].lower():
+                    ent = '_'.join([w.strip() for w in doc['_source']['clean'].split() if
                                     len(w) > 1 and w.lower() not in stopword_list])
                     popular = popular + ent.strip() + ' '
 

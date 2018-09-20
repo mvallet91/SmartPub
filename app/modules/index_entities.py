@@ -25,6 +25,7 @@ def is_number(s):
 def token_stopword_filter(word: str):
     filtered_word = ' '.join([t for t in word.split() if not is_number(t) and t not in stopwords.words('english')]) 
     filtered_word = re.sub(r'\[[^)]*\]', '', filtered_word)
+    filtered_word = re.sub(u"[^\w\d'\s\-]+", '', filtered_word)
     return filtered_word
 
 filter_publications = ['arxiv']
@@ -47,8 +48,8 @@ for rr in all_entities:
     if rr['_id'] in existing_ids:
         continue
         
-    if rr["Annotator"] in ['noise', 'other'] or rr["word"].lower() in stopwords.words('english') \
-    or wordnet.synsets(rr["word"].lower()) or rr['word'] == 'no_entities':
+    if rr["Annotator"] in ['noise', 'other'] or rr["clean"] in stopwords.words('english') \
+    or wordnet.synsets(rr["clean"]) or rr['word'] == 'no_entities' or len(rr['word']) < 3:
         excluded = excluded + 1
         continue
         

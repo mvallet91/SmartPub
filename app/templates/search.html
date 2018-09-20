@@ -7,7 +7,7 @@
   <meta name="description" content="bootstrap admin template">
   <meta name="author" content="">
 
-  <title>Search result | Remark Admin Template</title>
+  <title>Search Result | SmartPub</title>
 
   <link rel="apple-touch-icon" href="/static/images/apple-touch-icon.png">
   <link rel="shortcut icon" href="/static/images/favicon.ico">
@@ -98,11 +98,11 @@
           <ul class="list-group list-group-full list-group-dividered">
             {% for id, title,journal,year,authors in zipped_lists %}
               <li class="list-group-item">
-                                <h4><a class="search-result-link" href="http:///publication/{{ id }}">{{ title }}</a></h4>
+                                <h4><a class="search-result-link" href="/publication/{{ id }}">{{ title }}</a></h4>
                 <!--<table>-->
                   <!--<tr>-->
                                   {% for author in authors %}
-                <span style="display: inline-block"><a class="search-result-link" href="http:///author/{{author}}"> {{author}} &nbsp</a></span>
+                <span style="display: inline-block"><a class="search-result-link" href="/author/{{author}}"> {{author}} &nbsp</a></span>
 
                      <!--<td><a class="search-result-link" href="http://127.0.0.1:5000/author/{{author}}"> {{author}}, &nbsp</a> </td>-->
 
