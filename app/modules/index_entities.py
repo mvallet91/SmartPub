@@ -45,11 +45,11 @@ count = 0
 excluded = 0
 for rr in all_entities:
     
-    if rr['_id'] in existing_ids:
+    if rr['_id'] in existing_ids or 'clean' not in rr:
         continue
         
-    if rr["Annotator"] in ['noise', 'other'] or rr["clean"] in stopwords.words('english') \
-    or wordnet.synsets(rr["clean"]) or rr['word'] == 'no_entities' or len(rr['word']) < 3:
+    if rr["Annotator"] in ['noise', 'other', 'software'] or rr["clean"] in stopwords.words('english') \
+    or wordnet.synsets(rr["clean"]) or rr['word'] == 'no_entities' or len(rr['clean']) < 3:
         excluded = excluded + 1
         continue
         
@@ -83,9 +83,9 @@ for rr in all_entities:
             "mt_sim_70": rr['mt_sim_70'],
             "mt_sim_80": rr['mt_sim_80'],
             "mt_sim_90": rr['mt_sim_90'],
-            "clean": rr["clean"],
-            "lower": rr["word_lower"],
-            "no_punkt": rr["no_punkt"],
+            "clean": token_stopword_filter(rr['clean']),
+            "lower": token_stopword_filter(rr['word_lower']),
+            "no_punkt": token_stopword_filter(rr['no_punkt']),
             "annotator": rr["Annotator"],
             "experiment": rr["experiment"]
         })
