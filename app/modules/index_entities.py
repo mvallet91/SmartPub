@@ -30,10 +30,10 @@ def token_stopword_filter(word: str):
 
 filter_publications = ['arxiv']
 existing_ids = []
-# for publication in filter_publications:
-#     query={"query": {"match": {"journal": {"query": publication}}}}
-#     for doc in helpers.scan(es, index="entities_smartpub", query=query, size=500):
-#         existing_ids.append(doc['_id'])
+for publication in filter_publications:
+    query={"query": {"match": {"journal": {"query": publication}}}}
+    for doc in helpers.scan(es, index="entities_smartpub", query=query, size=500):
+        existing_ids.append(doc['_id'])
         
 print(len(existing_ids), 'entities already in index')
 
