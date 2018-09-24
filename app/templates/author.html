@@ -1,327 +1,303 @@
 <!DOCTYPE html>
-
 <html class="no-js css-menubar" lang="en">
 <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+    <meta name="description" content="Author Information">
+    <meta name="author" content="Web Information Systems | TU Delft">
+    <title>Author | SmartPub</title>
 
+    <link rel="apple-touch-icon" href="/static/images/apple-touch-icon.png">
+    <link rel="shortcut icon" href="/static/images/favicon.ico">
 
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
-  <meta name="description" content="bootstrap admin template">
-  <meta name="author" content="">
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/bootstrap-extend.min.css">
+    <link rel="stylesheet" href="/static/css/site.min.css">
 
-  <title>Author | SmartPub</title>
+    <!-- Plugins -->
+    <link rel="stylesheet" href="/static/vendor/animsition/animsition.css">
+    <link rel="stylesheet" href="/static/vendor/asscrollable/asScrollable.css">
+    <link rel="stylesheet" href="/static/vendor/switchery/switchery.css">
+    <link rel="stylesheet" href="/static/vendor/intro-js/introjs.css">
+    <link rel="stylesheet" href="/static/vendor/slidepanel/slidePanel.css">
+    <link rel="stylesheet" href="/static/vendor/flag-icon-css/flag-icon.css">
 
-  <link rel="apple-touch-icon" href="/static/images/apple-touch-icon.png">
-  <link rel="shortcut icon" href="/static/images/favicon.ico">
+    <!-- Fonts -->
+    <link rel="stylesheet" href="/static/fonts/web-icons/web-icons.min.css">
+    <link rel="stylesheet" href="/static/fonts/brand-icons/brand-icons.min.css">
+    <link rel='stylesheet' href='http://fonts.googleapis.com/css?family=Roboto:300,400,500,300italic'>
+    <!-- Inline -->
+    <link rel="stylesheet" href="/static/examples/css/pages/profile.css">
 
-  <!-- Stylesheets -->
-  <link rel="stylesheet" href="/static/css/bootstrap.min.css">
-  <link rel="stylesheet" href="/static/css/bootstrap-extend.min.css">
-  <link rel="stylesheet" href="/static/css/site.min.css">
-
-  <!-- Plugins -->
-  <link rel="stylesheet" href="/static/vendor/animsition/animsition.css">
-  <link rel="stylesheet" href="/static/vendor/asscrollable/asScrollable.css">
-  <link rel="stylesheet" href="/static/vendor/switchery/switchery.css">
-  <link rel="stylesheet" href="/static/vendor/intro-js/introjs.css">
-  <link rel="stylesheet" href="/static/vendor/slidepanel/slidePanel.css">
-  <link rel="stylesheet" href="/static/vendor/flag-icon-css/flag-icon.css">
-
-  <!-- Fonts -->
-  <link rel="stylesheet" href="/static/fonts/web-icons/web-icons.min.css">
-  <link rel="stylesheet" href="/static/fonts/brand-icons/brand-icons.min.css">
-  <link rel='stylesheet' href='http://fonts.googleapis.com/css?family=Roboto:300,400,500,300italic'>
-  <!-- Inline -->
-  <link rel="stylesheet" href="/static/examples/css/pages/profile.css">
-
-  <!--[if lt IE 9]>
-    <script src="/static/vendor/html5shiv/html5shiv.min.js"></script>
-    <![endif]-->
-
-  <!--[if lt IE 10]>
-    <script src="/static/vendor/media-match/media.match.min.js"></script>
-    <script src="/static/vendor/respond/respond.min.js"></script>
-    <![endif]-->
-
-  <!-- Scripts -->
-  <script src="/static/vendor/modernizr/modernizr.js"></script>
-  <script src="/static/vendor/breakpoints/breakpoints.js"></script>
-  <script>
-    Breakpoints();
-  </script>
+    <!-- Scripts -->
+    <script src="/static/vendor/modernizr/modernizr.js"></script>
+    <script src="/static/vendor/breakpoints/breakpoints.js"></script>
+    <script>
+        Breakpoints();
+    </script>
 </head>
 <body class="page-profile">
-  <!--[if lt IE 8]>
-        <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
-    <![endif]-->
-
-  <nav class="site-navbar navbar navbar-default navbar-fixed-top navbar-mega" role="navigation">
-
-      
-     <div class="navbar-container container-fluid">
-      <!-- Navbar Collapse -->
-      <div class="collapse navbar-collapse navbar-collapse-toolbar" id="site-navbar-collapse">
-        <form class="page-search-form" role="search" action='/search-result' method="post">
-          <div class="input-search input-search-dark" style="top: 20px;" align="center" >
-            <!--<i class="input-search-icon wb-search" aria-hidden="true"></i>-->
-            <input type="text" class="form-control" name="search" placeholder="Search..." size="30">
-              <input type="submit" />
-
-          </div>
-        </form>
-<!--           <a href="/" style="color:skyblue; font-weight:bold">      Home</a> -->
-        <!-- Navbar Toolbar -->
-
-        <!-- End Navbar Toolbar -->
-
-        <!-- Navbar Toolbar Right -->
-
-        <!-- End Navbar Toolbar Right -->
-      </div>
-      <!-- End Navbar Collapse -->
-
-      <!-- Site Navbar Seach -->
-      <!-- End Site Navbar Seach -->
-    </div>
-  </nav>
-
-
-
-
-  <!-- Page -->
-  <div class="page animsition">
-    <div class="page-content container-fluid">
-      <div class="row">
-        <div class="col-md-3">
-          <!-- Page Widget -->
-          <div class="widget widget-shadow text-center">
-            <div class="widget-header">
-              <div class="widget-header-content">
-                <a class="avatar avatar-lg" href="javascript:void(0)">
-                  <img src="/static/portraits/default.png" alt="...">
-                </a>
-                <h5 class="profile-user">{{author_name}}</h5>
-                <p class="profile-job">Scientist</p>
-                <p>Hi! I'm {{author_name}}</p>
-                <div class="profile-social">
-                  <!--<a class="icon bd-twitter" href="javascript:void(0)"></a>-->
-                  <!--<a class="icon bd-facebook" href="javascript:void(0)"></a>-->
-                  <!--<a class="icon bd-dribbble" href="javascript:void(0)"></a>-->
-                  <!--<a class="icon bd-github" href="javascript:void(0)"></a>-->
-                   <div  id="chart"></div>
-
+    <nav class="site-navbar navbar navbar-default navbar-fixed-top navbar-mega" role="navigation">
+        <div class="navbar-container container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="glyphicon glyphicon-arrow-down">Menu</span>
+                </button>
+            </div>
+            <div class="collapse navbar-collapse" id="collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="/" style="color:skyblue">Home</a></li>
+                    <li><a href="https://github.com/mvallet91/SmartPub-TSENER" style="color:skyblue">About</a></li>
+                    <li><a href="/entities/method/named%20entity%20recognition" style="color:skyblue">Entities</a></li>
+                    <li><a href="/dashapp/" style="color:skyblue">Stats</a></li>
+                </ul>
+                <div class="col-lg-8 col-sm-3">
+                    <form class="page-search-form" role="search" action='/search-result' method="post">
+                        <div class="input-search input-search-dark" style="top: 20px;" align="center" >
+                            <input type="text" class="form-control" name="search" placeholder="Search..." size="30">
+                            <input type="submit"/>
+                        </div>
+                    </form>
                 </div>
-                <button type="button" class="btn btn-primary">Follow</button>
-              </div>
             </div>
-              <div class="widget-footer">
-                 <!--<div  id="chart"></div>-->
-
-                 <!--<svg width="140" height="150" font-family="sans-serif" font-size="10" text-anchor="middle"></svg>-->
-
-            </div>
-
-
-            <!--<div class="widget-footer">-->
-              <!--<div class="row no-space">-->
-                <!--<div class="col-xs-4">-->
-                  <!--<strong class="profile-stat-count">260</strong>-->
-                  <!--<span>Follower</span>-->
-                <!--</div>-->
-                <!--<div class="col-xs-4">-->
-                  <!--<strong class="profile-stat-count">180</strong>-->
-                  <!--<span>Following</span>-->
-                <!--</div>-->
-                <!--<div class="col-xs-4">-->
-                  <!--<strong class="profile-stat-count">2000</strong>-->
-                  <!--<span>Tweets</span>-->
-                <!--</div>-->
-              <!--</div>-->
+            <!-- Navbar Collapse -->
+            <!--<div class="col-md-1">-->
+                <!--<a href="/" style="color:skyblue; font-weight:bold">Home</a>-->
             <!--</div>-->
-          </div>
-          <!-- End Page Widget -->
+            <!--<div class="collapse navbar-collapse navbar-collapse-toolbar" id="site-navbar-collapse">-->
+                <!--<form class="page-search-form" role="search" action='/search-result' method="post">-->
+                    <!--<div class="input-search input-search-dark" style="top: 20px;" align="center" >-->
+                        <!--<input type="text" class="form-control" name="search" placeholder="Search..." size="30">-->
+                        <!--<input type="submit" />-->
+                    <!--</div>-->
+                <!--</form>-->
+            <!--&lt;!&ndash; Navbar Toolbar &ndash;&gt;-->
+
+            <!--&lt;!&ndash; End Navbar Toolbar &ndash;&gt;-->
+
+            <!--&lt;!&ndash; Navbar Toolbar Right &ndash;&gt;-->
+
+            <!--&lt;!&ndash; End Navbar Toolbar Right &ndash;&gt;-->
+            <!--</div>-->
+            <!-- End Navbar Collapse -->
+
+            <!-- Site Navbar Seach -->
+            <!-- End Site Navbar Seach -->
         </div>
+    </nav>
 
-        <div class="col-md-9">
-          <!-- Panel -->
-          <div class="panel">
-            <div class="panel-body nav-tabs-animate">
-              <ul class="nav nav-tabs nav-tabs-line" data-plugin="nav-tabs" role="tablist">
-                <li class="active" role="presentation"><a data-toggle="tab" href="#activities" aria-controls="activities"
-                  role="tab">Publications <span class="badge badge-danger">{{number_of_pubs}}</span></a></li>
-               <!--  <li role="presentation"><a data-toggle="tab" href="#profile" aria-controls="profile" role="tab">Entities</a></li>-->
-                <li role="presentation"><a data-toggle="tab" href="#messages" aria-controls="messages"
-                  role="tab">Co-authors</a></li>
-              </ul>
-
-              <div class="tab-content">
-                <div class="tab-pane active animation-slide-left" id="activities" role="tabpanel">
-                  <ul class="list-group">
-
-
-                        {% for id, title,journal,year,authors in zipped_lists %}
-                      <li class="list-group-item">
-
-                      <h5><a href="/publication/{{ id }}">{{ title }}</a></h5>
-                <!--<table>-->
-                  <!--<tr>-->
-                                  {% for author in authors %}
-                <span style="display: inline-block"><a class="search-result-link" href="/author/{{author}}"> {{author}} &nbsp</a></span>
-
-                     <!--<td><a class="search-result-link" href="/author/{{author}}"> {{author}}, &nbsp</a> </td>-->
-
-
-                 {% endfor %}
-                <!--</tr></table>-->
-                                <!--<a class="search-result-link" href="http://127.0.0.1:5000/publication/{{ id }}">{{ authors }}</a>-->
-                                <small style="display: block">{{ journal}}, &nbsp {{ year}} </small>
-
-              {% endfor %}
-
-                    </li>
-
-                  </ul>
-                </div>
-                  <div class="tab-pane animation-slide-left" id="profile" role="tabpanel">
-                  <ul class="list-group">
-                    <li class="list-group-item">
-
-                  </ul>
-                </div>
-
-                <div class="tab-pane animation-slide-left" id="messages" role="tabpanel">
-                  <ul class="list-group">
-                      {% for author in authors_list_processed %}
-
-                    <li class="list-group-item">
-                      <div class="media">
-                        <div class="media-left">
-                          <a class="avatar" href="javascript:void(0)">
-                            <img class="img-responsive" src="/static/portraits/default.png"
-                            alt="...">
-                          </a>
+<!-- Page -->
+<div class="page animsition">
+    <div class="page-content container-fluid">
+        <div class="row">
+            <div class="col-md-3">
+                <!-- Page Widget -->
+                <div class="widget widget-shadow text-center">
+                    <div class="widget-header">
+                        <div class="widget-header-content">
+                            <a class="avatar avatar-lg" href="javascript:void(0)">
+                                <img src="/static/portraits/default.png" alt="..."></a>
+                            <h5 class="profile-user">{{author_name}}</h5>
+                            <p class="profile-job">Scientist</p>
+                            <p>Hi! I'm {{author_name}}</p>
+                            <div class="profile-social">
+                                <!--<a class="icon bd-twitter" href="javascript:void(0)"></a>-->
+                                <!--<a class="icon bd-facebook" href="javascript:void(0)"></a>-->
+                                <!--<a class="icon bd-dribbble" href="javascript:void(0)"></a>-->
+                                <!--<a class="icon bd-github" href="javascript:void(0)"></a>-->
+                                <div id="chart"></div>
+                            </div>
+                            <button type="button" class="btn btn-primary">Follow</button>
                         </div>
-                        <div class="media-body">
-                          <h4 class="media-heading"><a class="search-result-link" href="/author/{{author}}">{{author}}</a>
+                    </div>
+                    <div class="widget-footer">
+                        <!--<div  id="chart"></div>-->
+                        <!--<svg width="140" height="150" font-family="sans-serif" font-size="10" text-anchor="middle"></svg>-->
+                    </div>
 
-                          </h4>
-
-                          <!--<div class="profile-brief">“Check if it can be corrected with overflow : hidden”</div>-->
-                        </div>
-                      </div>
-                    </li>
-{% endfor %}
-
-                  </ul>
+                    <!--<div class="widget-footer">-->
+                    <!--<div class="row no-space">-->
+                    <!--<div class="col-xs-4">-->
+                    <!--<strong class="profile-stat-count">260</strong>-->
+                    <!--<span>Follower</span>-->
+                    <!--</div>-->
+                    <!--<div class="col-xs-4">-->
+                    <!--<strong class="profile-stat-count">180</strong>-->
+                    <!--<span>Following</span>-->
+                    <!--</div>-->
+                    <!--<div class="col-xs-4">-->
+                    <!--<strong class="profile-stat-count">2000</strong>-->
+                    <!--<span>Tweets</span>-->
+                    <!--</div>-->
+                    <!--</div>-->
+                    <!--</div>-->
                 </div>
-              </div>
+                <!-- End Page Widget -->
             </div>
-          </div>
-          <!-- End Panel -->
+
+            <div class="col-md-9">
+                <!-- Panel -->
+                <div class="panel">
+                    <div class="panel-body nav-tabs-animate">
+                        <ul class="nav nav-tabs nav-tabs-line" data-plugin="nav-tabs" role="tablist">
+                            <li class="active" role="presentation"><a data-toggle="tab" href="#activities"
+                                                                      aria-controls="activities"
+                                                                      role="tab">Publications <span
+                                    class="badge badge-danger">{{number_of_pubs}}</span></a></li>
+                            <!--  <li role="presentation"><a data-toggle="tab" href="#profile" aria-controls="profile" role="tab">Entities</a></li>-->
+                            <li role="presentation"><a data-toggle="tab" href="#messages" aria-controls="messages"
+                                                       role="tab">Co-authors</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                            <div class="tab-pane active animation-slide-left" id="activities" role="tabpanel">
+                                <ul class="list-group">
+                                    {% for id, title,journal,year,authors in zipped_lists %}
+                                    <li class="list-group-item">
+                                        <h5><a href="/publication/{{ id }}">{{ title }}</a></h5>
+                                        <!--<table>-->
+                                        <!--<tr>-->
+                                        {% for author in authors %}
+                                        <span style="display: inline-block"><a class="search-result-link"
+                                                                               href="/author/{{author}}"> {{author}} &nbsp</a></span>
+                                        <!--<td><a class="search-result-link" href="/author/{{author}}"> {{author}}, &nbsp</a> </td>-->
+                                        {% endfor %}
+                                        <!--</tr></table>-->
+                                        <small style="display: block">{{ journal}}, &nbsp {{ year}}</small>
+                                        {% endfor %}
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="tab-pane animation-slide-left" id="profile" role="tabpanel">
+                                <ul class="list-group">
+                                    <li class="list-group-item">
+                                </ul>
+                            </div>
+
+                            <div class="tab-pane animation-slide-left" id="messages" role="tabpanel">
+                                <ul class="list-group">
+                                    {% for author in authors_list_processed %}
+                                    <li class="list-group-item">
+                                        <div class="media">
+                                            <div class="media-left">
+                                                <a class="avatar" href="javascript:void(0)">
+                                                    <img class="img-responsive" src="/static/portraits/default.png" alt="...">
+                                                </a>
+                                            </div>
+                                            <div class="media-body">
+                                                <h4 class="media-heading"><a class="search-result-link"
+                                                                             href="/author/{{author}}">{{author}}</a>
+                                                </h4>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End Panel -->
+            </div>
         </div>
-      </div>
     </div>
-  </div>
+</div>
+<!-- End Page -->
 
-  <!-- End Page -->
-
-
-  <!-- Footer -->
-  <footer class="site-footer">
+<!-- Footer -->
+<footer class="site-footer">
     <span class="site-footer-legal">© 2018 <a href="https://github.com/mvallet91/SmartPub-TSENER">SmartPub</a></span>
-    <!--<div class="site-footer-right">-->
-      <!--Crafted with <i class="red-600 wb wb-heart"></i> by <a href="http://themeforest.net/user/amazingSurge">amazingSurge</a>-->
-    <!--</div>-->
-  </footer>
-  <!-- Core  -->
-  <script src="/static/vendor/jquery/jquery.js"></script>
-  <script src="/static/vendor/bootstrap/bootstrap.js"></script>
-  <script src="/static/vendor/animsition/jquery.animsition.js"></script>
-  <script src="/static/vendor/asscroll/jquery-asScroll.js"></script>
-  <script src="/static/vendor/mousewheel/jquery.mousewheel.js"></script>
-  <script src="/static/vendor/asscrollable/jquery.asScrollable.all.js"></script>
-  <script src="/static/vendor/ashoverscroll/jquery-asHoverScroll.js"></script>
+</footer>
+<!-- Core  -->
+<script src="/static/vendor/jquery/jquery.js"></script>
+<script src="/static/vendor/bootstrap/bootstrap.js"></script>
+<script src="/static/vendor/animsition/jquery.animsition.js"></script>
+<script src="/static/vendor/asscroll/jquery-asScroll.js"></script>
+<script src="/static/vendor/mousewheel/jquery.mousewheel.js"></script>
+<script src="/static/vendor/asscrollable/jquery.asScrollable.all.js"></script>
+<script src="/static/vendor/ashoverscroll/jquery-asHoverScroll.js"></script>
 
-  <!-- Plugins -->
-  <script src="/static/vendor/switchery/switchery.min.js"></script>
-  <script src="/static/vendor/intro-js/intro.js"></script>
-  <script src="/static/vendor/screenfull/screenfull.js"></script>
-  <script src="/static/vendor/slidepanel/jquery-slidePanel.js"></script>
+<!-- Plugins -->
+<script src="/static/vendor/switchery/switchery.min.js"></script>
+<script src="/static/vendor/intro-js/intro.js"></script>
+<script src="/static/vendor/screenfull/screenfull.js"></script>
+<script src="/static/vendor/slidepanel/jquery-slidePanel.js"></script>
 
-  <!-- Scripts -->
-  <script src="/static/js/core.js"></script>
-  <script src="/static/js/site.js"></script>
+<!-- Scripts -->
+<script src="/static/js/core.js"></script>
+<script src="/static/js/site.js"></script>
 
-  <script src="/static/js/sections/menu.js"></script>
-  <script src="/static/js/sections/menubar.js"></script>
-  <script src="/static/js/sections/gridmenu.js"></script>
-  <script src="/static/js/sections/sidebar.js"></script>
+<script src="/static/js/sections/menu.js"></script>
+<script src="/static/js/sections/menubar.js"></script>
+<script src="/static/js/sections/gridmenu.js"></script>
+<script src="/static/js/sections/sidebar.js"></script>
 
-  <script src="/static/js/configs/config-colors.js"></script>
-  <script src="/static/js/configs/config-tour.js"></script>
+<script src="/static/js/configs/config-colors.js"></script>
+<script src="/static/js/configs/config-tour.js"></script>
 
-  <script src="/static/js/components/asscrollable.js"></script>
-  <script src="/static/js/components/animsition.js"></script>
-  <script src="/static/js/components/slidepanel.js"></script>
-  <script src="/static/js/components/switchery.js"></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js"></script>
+<script src="/static/js/components/asscrollable.js"></script>
+<script src="/static/js/components/animsition.js"></script>
+<script src="/static/js/components/slidepanel.js"></script>
+<script src="/static/js/components/switchery.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js"></script>
 
 
-    <script src="https://rawgit.com/jasondavies/d3-cloud/master/build/d3.layout.cloud.js"></script>
+<script src="https://rawgit.com/jasondavies/d3-cloud/master/build/d3.layout.cloud.js"></script>
 
-  <!-- Scripts For This Page -->
+<!-- Scripts For This Page -->
+<script>
+    (function (document, window, $) {
+        'use strict';
 
-
- <script>
-    (function(document, window, $) {
-      'use strict';
-
-      var Site = window.Site;
-      $(document).ready(function() {
-        Site.run();
-      });
+        var Site = window.Site;
+        $(document).ready(function () {
+            Site.run();
+        });
     })(document, window, jQuery);
-  </script>
+</script>
 
 <script type="text/javascript">
-// Using jQuery.
+    // Using jQuery.
 
-$(function() {
-    $('form').each(function() {
-        $(this).find('input').keypress(function(e) {
-            // Enter pressed?
-            if(e.which == 10 || e.which == 13) {
-                this.form.submit();
-            }
+    $(function () {
+        $('form').each(function () {
+            $(this).find('input').keypress(function (e) {
+                // Enter pressed?
+                if (e.which == 10 || e.which == 13) {
+                    this.form.submit();
+                }
+            });
+            $(this).find('input[type=submit]').hide();
         });
-        $(this).find('input[type=submit]').hide();
     });
-});
 
 </script>
-   <script>
-      var text_string = '{{text_string}}'
-      drawWordCloud(text_string);
-      function drawWordCloud(text_string){
+<script>
+    var text_string = '{{text_string}}'
+    drawWordCloud(text_string);
+
+    function drawWordCloud(text_string) {
         var common = "nand,based,section,introduction,poop,i,me,my,myself,we,us,our,ours,ourselves,you,your,yours,yourself,yourselves,he,him,his,himself,she,her,hers,herself,it,its,itself,they,them,their,theirs,themselves,what,which,who,whom,whose,this,that,these,those,am,is,are,was,were,be,been,being,have,has,had,having,do,does,did,doing,will,would,should,can,could,ought,i'm,you're,he's,she's,it's,we're,they're,i've,you've,we've,they've,i'd,you'd,he'd,she'd,we'd,they'd,i'll,you'll,he'll,she'll,we'll,they'll,isn't,aren't,wasn't,weren't,hasn't,haven't,hadn't,doesn't,don't,didn't,won't,wouldn't,shan't,shouldn't,can't,cannot,couldn't,mustn't,let's,that's,who's,what's,here's,there's,when's,where's,why's,how's,a,an,the,and,but,if,or,because,as,until,while,of,at,by,for,with,about,against,between,into,through,during,before,after,above,below,to,from,up,upon,down,in,out,on,off,over,under,again,further,then,once,here,there,when,where,why,how,all,any,both,each,few,more,most,other,some,such,no,nor,not,only,own,same,so,than,too,very,say,says,said,shall";
         var word_count = {};
 //         var words = text_string.split(/[ '\-\(\)\*":;\[\]|{},.!?]+/);
         var words = text_string.split(/[ '\(\)\*":;\[\]|{},.!?]+/);
-          if (words.length == 1){
+        if (words.length == 1) {
             word_count[words[0]] = 1;
-          } else {
-            words.forEach(function(word){
-              var word = word.toLowerCase();
-              if (word != "" && common.indexOf(word)==-1 && word.length>1){
-                if (word_count[word]){
-                  word_count[word]++;
-                } else {
-                  word_count[word] = 1;
+        } else {
+            words.forEach(function (word) {
+                var word = word.toLowerCase();
+                if (word != "" && common.indexOf(word) == -1 && word.length > 1) {
+                    if (word_count[word]) {
+                        word_count[word]++;
+                    } else {
+                        word_count[word] = 1;
+                    }
                 }
-              }
             })
-          }
+        }
 
         var svg_location = "#chart";
         var width = 120;
@@ -332,137 +308,147 @@ $(function() {
         var word_entries = d3.entries(word_count);
 
         var xScale = d3.scale.linear()
-           .domain([0, d3.max(word_entries, function(d) {
-              return d.value;
+            .domain([0, d3.max(word_entries, function (d) {
+                return d.value;
             })
-           ])
-           .range([5,25]);
+            ])
+            .range([5, 25]);
 
         d3.layout.cloud().size([width, height])
-          .timeInterval(20)
-          .words(word_entries)
-          .fontSize(function(d) { return xScale(+d.value); })
-          .text(function(d) { return d.key; })
-          .rotate(function() { return ~~(Math.random() * 2) * 90; })
-          .font("Impact")
-          .on("end", draw)
-          .start();
+            .timeInterval(20)
+            .words(word_entries)
+            .fontSize(function (d) {
+                return xScale(+d.value);
+            })
+            .text(function (d) {
+                return d.key;
+            })
+            .rotate(function () {
+                return ~~(Math.random() * 2) * 90;
+            })
+            .font("Impact")
+            .on("end", draw)
+            .start();
 
         function draw(words) {
-          d3.select(svg_location).append("svg")
-              .attr("width", width)
-              .attr("height", height)
-            .append("g")
-              .attr("transform", "translate(" + [width >> 1, height >> 1] + ")")
-            .selectAll("text")
-              .data(words)
-            .enter().append("text")
-              .style("font-size", function(d) { return xScale(d.value) + "px"; })
-              .style("font-family", "Impact")
-              .style("fill", function(d, i) { return fill(i); })
-              .attr("text-anchor", "middle")
-              .attr("transform", function(d) {
-                return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
-              })
-              .text(function(d) { return d.text; })
-      .on("click", function (d, i){
-          let entity = d.text;
-          entity = entity.split('_').join(' ');
-          window.location = "/entities/method/" + entity;
-      })
-            .on({
-      "mouseover": function(d) {
-        d3.select(this).style("cursor", "pointer")
-      },
-      "mouseout": function(d) {
-        d3.select(this).style("cursor", "")
-      }
-    });
+            d3.select(svg_location).append("svg")
+                .attr("width", width)
+                .attr("height", height)
+                .append("g")
+                .attr("transform", "translate(" + [width >> 1, height >> 1] + ")")
+                .selectAll("text")
+                .data(words)
+                .enter().append("text")
+                .style("font-size", function (d) {
+                    return xScale(d.value) + "px";
+                })
+                .style("font-family", "Impact")
+                .style("fill", function (d, i) {
+                    return fill(i);
+                })
+                .attr("text-anchor", "middle")
+                .attr("transform", function (d) {
+                    return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+                })
+                .text(function (d) {
+                    return d.text;
+                })
+                .on("click", function (d, i) {
+                    let entity = d.text;
+                    entity = entity.split('_').join(' ');
+                    window.location = "/entities/method/" + entity;
+                })
+                .on({
+                    "mouseover": function (d) {
+                        d3.select(this).style("cursor", "pointer")
+                    },
+                    "mouseout": function (d) {
+                        d3.select(this).style("cursor", "")
+                    }
+                });
         }
 
         d3.layout.cloud().stop();
-      }
-       myCircle.on({
-      "mouseover": function(d) {
-        d3.select(this).style("cursor", "pointer")
-      },
-      "mouseout": function(d) {
-        d3.select(this).style("cursor", "")
-      }
+    }
+
+    myCircle.on({
+        "mouseover": function (d) {
+            d3.select(this).style("cursor", "pointer")
+        },
+        "mouseout": function (d) {
+            d3.select(this).style("cursor", "")
+        }
     });
 
-    </script>
+</script>
 <!--<script>-->
 <!--$(document).ready(function(){-->
-    <!--$(".nav-tabs a").click(function(){-->
-        <!--$(this).tab('show');-->
-    <!--});-->
+<!--$(".nav-tabs a").click(function(){-->
+<!--$(this).tab('show');-->
+<!--});-->
 <!--});-->
 <!--</script>-->
 
 <!--<script>-->
 
 <!--var svg = d3.select("svg"),-->
-    <!--width = +svg.attr("width"),-->
-    <!--height = +svg.attr("height");-->
+<!--width = +svg.attr("width"),-->
+<!--height = +svg.attr("height");-->
 
 <!--var format = d3.format(",d");-->
 
 <!--var color = d3.scaleOrdinal(d3.schemeCategory20c);-->
 
 <!--var pack = d3.pack()-->
-    <!--.size([width, height])-->
-    <!--.padding(1);-->
+<!--.size([width, height])-->
+<!--.padding(1);-->
 
 <!--d3.csv("/static/files/flare.csv", function(d) {-->
-  <!--d.value = +d.value;-->
-  <!--if (d.value) return d;-->
+<!--d.value = +d.value;-->
+<!--if (d.value) return d;-->
 <!--}, function(error, classes) {-->
-  <!--if (error) throw error;-->
+<!--if (error) throw error;-->
 
-  <!--var root = d3.hierarchy({children: classes})-->
-      <!--.sum(function(d) { return d.value; })-->
-      <!--.each(function(d) {-->
-        <!--if (id = d.data.id) {-->
-          <!--var id, i = id.lastIndexOf(".");-->
-          <!--d.id = id;-->
-          <!--d.package = id.slice(0, i);-->
-          <!--d.class = id.slice(i + 1);-->
-        <!--}-->
-      <!--});-->
+<!--var root = d3.hierarchy({children: classes})-->
+<!--.sum(function(d) { return d.value; })-->
+<!--.each(function(d) {-->
+<!--if (id = d.data.id) {-->
+<!--var id, i = id.lastIndexOf(".");-->
+<!--d.id = id;-->
+<!--d.package = id.slice(0, i);-->
+<!--d.class = id.slice(i + 1);-->
+<!--}-->
+<!--});-->
 
-  <!--var node = svg.selectAll(".node")-->
-    <!--.data(pack(root).leaves())-->
-    <!--.enter().append("g")-->
-      <!--.attr("class", "node")-->
-      <!--.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });-->
+<!--var node = svg.selectAll(".node")-->
+<!--.data(pack(root).leaves())-->
+<!--.enter().append("g")-->
+<!--.attr("class", "node")-->
+<!--.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });-->
 
-  <!--node.append("circle")-->
-      <!--.attr("id", function(d) { return d.id; })-->
-      <!--.attr("r", function(d) { return d.r; })-->
-      <!--.style("fill", function(d) { return color(d.package); });-->
+<!--node.append("circle")-->
+<!--.attr("id", function(d) { return d.id; })-->
+<!--.attr("r", function(d) { return d.r; })-->
+<!--.style("fill", function(d) { return color(d.package); });-->
 
-  <!--node.append("clipPath")-->
-      <!--.attr("id", function(d) { return "clip-" + d.id; })-->
-    <!--.append("use")-->
-      <!--.attr("xlink:href", function(d) { return "#" + d.id; });-->
+<!--node.append("clipPath")-->
+<!--.attr("id", function(d) { return "clip-" + d.id; })-->
+<!--.append("use")-->
+<!--.attr("xlink:href", function(d) { return "#" + d.id; });-->
 
-  <!--node.append("text")-->
-      <!--.attr("clip-path", function(d) { return "url(#clip-" + d.id + ")"; })-->
-    <!--.selectAll("tspan")-->
-    <!--.data(function(d) { return d.class.split(/(?=[A-Z][^A-Z])/g); })-->
-    <!--.enter().append("tspan")-->
-      <!--.attr("x", 0)-->
-      <!--.attr("y", function(d, i, nodes) { return 13 + (i - nodes.length / 2 - 0.5) * 10; })-->
-      <!--.text(function(d) { return d; });-->
+<!--node.append("text")-->
+<!--.attr("clip-path", function(d) { return "url(#clip-" + d.id + ")"; })-->
+<!--.selectAll("tspan")-->
+<!--.data(function(d) { return d.class.split(/(?=[A-Z][^A-Z])/g); })-->
+<!--.enter().append("tspan")-->
+<!--.attr("x", 0)-->
+<!--.attr("y", function(d, i, nodes) { return 13 + (i - nodes.length / 2 - 0.5) * 10; })-->
+<!--.text(function(d) { return d; });-->
 
-  <!--node.append("title")-->
-      <!--.text(function(d) { return d.id + "\n" + format(d.value); });-->
+<!--node.append("title")-->
+<!--.text(function(d) { return d.id + "\n" + format(d.value); });-->
 <!--});-->
 
 <!--</script>-->
-
-
 </body>
-
 </html>

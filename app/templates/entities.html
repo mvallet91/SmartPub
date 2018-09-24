@@ -27,8 +27,8 @@ button {
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
-  <meta name="description" content="bootstrap admin template">
-  <meta name="author" content="">
+  <meta name="description" content="Entity Information">
+  <meta name="author" content="Web Information Systems - TU Delft">
 
   <title>Entity | SmartPub</title>
 
@@ -57,15 +57,6 @@ button {
   <!-- Inline -->
   <link rel="stylesheet" href="/static/examples/css/pages/profile.css">
 
-  <!--[if lt IE 9]>
-    <script src="/static/vendor/html5shiv/html5shiv.min.js"></script>
-    <![endif]-->
-
-  <!--[if lt IE 10]>
-    <script src="/static/vendor/media-match/media.match.min.js"></script>
-    <script src="/static/vendor/respond/respond.min.js"></script>
-    <![endif]-->
-
   <!-- Scripts -->
   <script src="/static/vendor/modernizr/modernizr.js"></script>
   <script src="/static/vendor/breakpoints/breakpoints.js"></script>
@@ -76,239 +67,165 @@ button {
   </script>
 </head>
 <body class="page-profile">
-
-
-  <!--&lt;!&ndash;[if lt IE 8]>-->
-        <!--<p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>-->
-    <!--<![endif]&ndash;&gt;-->
-
-  <nav class="site-navbar navbar navbar-default navbar-fixed-top navbar-mega" role="navigation">
-      
-      
-     <div class="navbar-container container-fluid">
-      <!-- Navbar Collapse -->
-      <div class="collapse navbar-collapse navbar-collapse-toolbar" id="site-navbar-collapse">
-        <form class="page-search-form" role="search" action='/search-result' method="post">
-          <div class="input-search input-search-dark" style="top: 20px;" align="center" >
-<!--             <i class="input-search-icon wb-search" aria-hidden="true"></i> -->
-            <input type="text" class="form-control" name="search" placeholder="Search..." size="30">
-              <input type="submit" />
-
-          </div> 
-        </form>
-<!--           <a href="/" style="color:skyblue; font-weight:bold">      Home</a> -->
-        <!-- Navbar Toolbar -->
-
-        <!-- End Navbar Toolbar -->
-
-        <!-- Navbar Toolbar Right -->
-
-        <!-- End Navbar Toolbar Right -->
-      </div>
-      <!-- End Navbar Collapse -->
-
-      <!-- Site Navbar Seach -->
-      <!-- End Site Navbar Seach -->
-    </div>
-  </nav>
-
-
-
-
-  <!-- Page -->
-
-  <div class="page animsition">
-    <div class="page-content container-fluid" style="padding:30px 30px;">
-      <div class="row">
-        <div class="col-md-3">
-          <!-- Page Widget -->
-          <div class="widget widget-shadow text-center">
-            <div class="widget-header">
-              <div class="widget-header-content">
-
-                <!--<a class="avatar avatar-lg" href="javascript:void(0)">-->
-                  <!--&lt;!&ndash;<img src="/static/portraits/default.png" alt="...">&ndash;&gt;-->
-                <!--</a>-->
-                <h4 class="profile-user">{{entity_name}}</h4>
-                    <form class="page-search-form" role="searchentity" action="{{url_for('entities')}}" method="post">
-
-
-
-                        <span style="display: inline-block"><input type="text" class="form-control" name="searchent" placeholder="Search Entity..." size="30" style="margin-left: 65px"><input type="submit" /> </span>
-                           <!--<span style="display: inline-block"> <i class="input-search-icon wb-search" aria-hidden="true"></i></span>-->
-  <!--<span style="display: inline-block"></span>-->
-
-
-
-
-
-
-        </form>
-                   <div class="profile-social">
-                  <!--<a class="icon bd-twitter" href="javascript:void(0)"></a>-->
-                  <!--<a class="icon bd-facebook" href="javascript:void(0)"></a>-->
-                  <!--<a class="icon bd-dribbble" href="javascript:void(0)"></a>-->
-                  <!--<a class="icon bd-github" href="javascript:void(0)"></a>-->
-                   <div  id="chart2"></div>
-
-                       <div  id="chartpie"></div>
-
+    <nav class="site-navbar navbar navbar-default navbar-fixed-top navbar-mega" role="navigation">
+        <div class="navbar-container container-fluid">
+                <div class="navbar-header"><!-- -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="glyphicon glyphicon-arrow-down">Menu</span>
+                    </button>
                 </div>
-
-
-
-
-                  <!--<form name="Item_1" action="results.html" method='POST'>-->
-    <!--<select name="Item_1">-->
-        <!--<option value="Red">Red</option>-->
-        <!--<option value="Green">Green</option>        -->
-    <!--</select>-->
-    <!--<button type="submit">Compare!</button>-->
-<!--</form>-->
-
-                <!--<p class="profile-job">Scientist</p>-->
-                <!--<p>Hi! I'm {{author_name}}</p>-->
-                <!--<div class="profile-social">-->
-                  <!--<a class="icon bd-twitter" href="javascript:void(0)"></a>-->
-                  <!--<a class="icon bd-facebook" href="javascript:void(0)"></a>-->
-                  <!--<a class="icon bd-dribbble" href="javascript:void(0)"></a>-->
-                  <!--<a class="icon bd-github" href="javascript:void(0)"></a>-->
-                <!--</div>-->
-                <!--<button type="button" class="btn btn-primary">Follow</button>-->
-              </div>
-
-            </div>
-            <!--<div class="widget-footer">-->
-              <!--<div class="row no-space">-->
-                <!--<div class="col-xs-4">-->
-                  <!--<strong class="profile-stat-count">260</strong>-->
-                  <!--<span>Follower</span>-->
-                <!--</div>-->
-                <!--<div class="col-xs-4">-->
-                  <!--<strong class="profile-stat-count">180</strong>-->
-                  <!--<span>Following</span>-->
-                <!--</div>-->
-                <!--<div class="col-xs-4">-->
-                  <!--<strong class="profile-stat-count">2000</strong>-->
-                  <!--<span>Tweets</span>-->
-                <!--</div>-->
-              <!--</div>-->
+                <div class="collapse navbar-collapse" id="collapse">
+                    <ul class="nav navbar-nav">
+                        <li><a href="/" style="color:skyblue">Home</a></li>
+                        <li><a href="https://github.com/mvallet91/SmartPub-TSENER" style="color:skyblue">About</a></li>
+                        <li><a href="/entities/method/named%20entity%20recognition" style="color:skyblue">Entities</a></li>
+                        <li><a href="/dashapp/" style="color:skyblue">Stats</a></li>
+                    </ul>
+                        <div class="col-lg-8 col-sm-3" align="center">
+                            <form class="page-search-form" role="search" action='/search-result' method="post">
+                                <div class="input-search input-search-dark" style="top: 20px;" align="center" >
+                                    <input type="text" class="form-control" name="search" placeholder="Search..." size="30">
+                                    <input type="submit" />
+                                </div>
+                            </form>
+                        </div>
+                </div>
+            <!-- Navbar Collapse -->
+            <!--<div class="col-md-1">-->
+                <!--<a href="/" style="color:skyblue; font-weight:bold">Home</a>-->
             <!--</div>-->
-          </div>
+            <!--<div class="collapse navbar-collapse navbar-collapse-toolbar" id="site-navbar-collapse">-->
+                <!--<form class="page-search-form" role="search" action='/search-result' method="post">-->
+                    <!--<div class="input-search input-search-dark" style="top: 20px;" align="center" >-->
+                        <!--<input type="text" class="form-control" name="search" placeholder="Search..." size="30">-->
+                        <!--<input type="submit" />-->
+                    <!--</div>-->
+                <!--</form>-->
+            <!--&lt;!&ndash; Navbar Toolbar &ndash;&gt;-->
+
+            <!--&lt;!&ndash; End Navbar Toolbar &ndash;&gt;-->
+
+            <!--&lt;!&ndash; Navbar Toolbar Right &ndash;&gt;-->
+
+            <!--&lt;!&ndash; End Navbar Toolbar Right &ndash;&gt;-->
+            <!--</div>-->
+            <!-- End Navbar Collapse -->
+
+            <!-- Site Navbar Seach -->
+            <!-- End Site Navbar Seach -->
+        </div>
+    </nav>
+    <!-- Page -->
+    <div class="page animsition">
+        <div class="page-content container-fluid" style="padding:30px 30px;">
+            <div class="row">
+                <div class="col-md-3">
+                    <!-- Page Widget -->
+                    <div class="widget widget-shadow text-center">
+                        <div class="widget-header">
+                            <div class="widget-header-content">
+                                <h4 class="profile-user">{{entity_name}}</h4>
+                                <form class="page-search-form" role="searchentity" action="{{url_for('entities')}}" method="post">
+                                    <span style="display: inline-block"><input type="text" class="form-control" name="searchent" placeholder="Search Entity..." size="30" style="margin-left: 65px"><input type="submit" /> </span>
+                                </form>
+                                <div class="profile-social">
+                                    <div  id="chart2"></div>
+                                    <div  id="chartpie"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
           <!-- End Page Widget -->
-        </div>
-
-        <div class="col-md-9">
-          <!-- Panel -->
-          <div class="panel">
-            <div class="panel-body nav-tabs-animate">
-              <ul class="nav nav-tabs nav-tabs-line" data-plugin="nav-tabs" role="tablist">
-                <li class="active" role="presentation"><a data-toggle="tab" href="#activities" aria-controls="activities"
-                  role="tab">Popularity of {{entity_name}} and Top 6 Co-occured Entities Over time <span class="badge badge-danger">{{number_of_pubs}}</span></a></li>
-                <li role="presentation"><a data-toggle="tab" href="#profile" aria-controls="profile" role="tab">Related Publications</a></li>
-                <!--<li role="presentation"><a data-toggle="tab" href="#messages" aria-controls="messages"-->
-                  <!--role="tab">Entity/Conference</a></li>-->
-              </ul>
-
-              <div class="tab-content">
-                <div class="tab-pane active animation-slide-left" id="activities" role="tabpanel">
-                    <ul class="list-group">
-                        <li class="list-group-item">
-                              <div class="row">
-<!--                     <div class="col-md-12">
-                        <select id="multiselect-ui" class="multiselect-ui form-control my-dropdown" multiple="multiple">
-                            <option value="ESWC" >ESWC</option>
-                            <option value="ICWSM">ICWSM</option>
-                            <option value="VLDB">VLDB</option>
-                            <option value="WWW">WWW</option>
-                             <option value="SIGIR">SIGIR</option>
-
-                         <option value="TREC">TREC</option>
-                            <option value="ECDL">ECDL</option>
-                              <option value="TPDL">TPDL</option>
-                            <option value="ICSE">ICSE</option>
-                         <option value="JCDL">JCDL</option>
-                         <option value="ICDM">ICDM</option>
-                        </select>
-                    </div> -->
-
                 </div>
-                   <div class="chart"></div>
-                            </li>
-                        <li>
-                    <!--<svg width="960" height="500"></svg>-->
-                            </li>
-                        </ul>
+                <div class="col-md-9">
+                    <!-- Panel -->
+                    <div class="panel">
+                        <div class="panel-body nav-tabs-animate">
+                            <ul class="nav nav-tabs nav-tabs-line" data-plugin="nav-tabs" role="tablist">
+                                <li class="active" role="presentation">
+                                    <a data-toggle="tab" href="#activities" aria-controls="activities" role="tab">
+                                    Popularity of {{entity_name}} and Top 6 Co-occured Entities Over time
+                                    <span class="badge badge-danger">{{number_of_pubs}}</span></a>
+                                </li>
+                                <li role="presentation">
+                                    <a data-toggle="tab" href="#profile" aria-controls="profile" role="tab">
+                                    Related Publications</a>
+                                </li>
+                            </ul>
+                            <div class="tab-content">
+                                <div class="tab-pane active animation-slide-left" id="activities" role="tabpanel">
+                                    <ul class="list-group">
+                                        <li class="list-group-item">
+                                            <div class="row">
+                                        <!-- <div class="col-md-12">
+                                                <select id="multiselect-ui" class="multiselect-ui form-control my-dropdown" multiple="multiple">
+                                                    <option value="ESWC" >ESWC</option>
+                                                    <option value="ICWSM">ICWSM</option>
+                                                    <option value="VLDB">VLDB</option>
+                                                    <option value="WWW">WWW</option>
+                                                    <option value="SIGIR">SIGIR</option>
 
-
-
-
-
-
-                </div>
-                  <div class="tab-pane animation-slide-left" id="profile" role="tabpanel">
-                  <ul class="list-group">
-
-
-                        {% for id, title,journal,year,authors in zipped_lists %}
-                      <li class="list-group-item">
-
-                      <h5><a href="/publication/{{ id }}">{{ title }}</a></h5>
-                <!--<table>-->
-                  <!--<tr>-->
-                                  {% for author in authors %}
-                <span style="display: inline-block"><a class="search-result-link" href="/author/{{author}}"> {{author}} &nbsp</a></span>
-
-                     <!--<td><a class="search-result-link" href="http://127.0.0.1:5000/author/{{author}}"> {{author}}, &nbsp</a> </td>-->
-
-
-                 {% endfor %}
-                <!--</tr></table>-->
-                                <!--<a class="search-result-link" href="http://127.0.0.1:5000/publication/{{ id }}">{{ authors }}</a>-->
-                                <small style="display: block">{{ journal}}, &nbsp {{ year}} </small>
-
-              {% endfor %}
-
-                    </li>
-
-                  </ul>
-
-                </div>
-
-                <div class="tab-pane animation-slide-left" id="messages" role="tabpanel">
-                  <ul class="list-group">
-                      {% for author in authors_list_processed %}
-
-                    <li class="list-group-item">
-                      <div class="media">
-                        <div class="media-left">
-                          <a class="avatar" href="javascript:void(0)">
-                            <img class="img-responsive" src="/static/portraits/default.png"
-                            alt="...">
-                          </a>
+                                                    <option value="TREC">TREC</option>
+                                                    <option value="ECDL">ECDL</option>
+                                                    <option value="TPDL">TPDL</option>
+                                                    <option value="ICSE">ICSE</option>
+                                                    <option value="JCDL">JCDL</option>
+                                                    <option value="ICDM">ICDM</option>
+                                                </select>
+                                            </div> -->
+                                            </div>
+                                            <div class="chart"></div>
+                                        </li>
+                                        <li>
+                                            <!--<svg width="960" height="500"></svg>-->
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="tab-pane animation-slide-left" id="profile" role="tabpanel">
+                                    <ul class="list-group">
+                                        {% for id, title,journal,year,authors in zipped_lists %}
+                                        <li class="list-group-item">
+                                            <h5><a href="/publication/{{ id }}">{{ title }}</a></h5>
+                                            {% for author in authors %}
+                                            <span style="display: inline-block">
+                                                <a class="search-result-link" href="/author/{{author}}"> {{author}} &nbsp</a>
+                                            </span>
+                                            {% endfor %}
+                                            <small style="display: block">{{journal}}, &nbsp {{ year}} </small>
+                                            {% endfor %}
+                                        </li>
+                                    </ul>
+                                </div>
+                            <!--<div class="tab-pane animation-slide-left" id="messages" role="tabpanel">
+                                    <ul class="list-group">
+                                        {% for author in authors_list_processed %}
+                                        <li class="list-group-item">
+                                            <div class="media">
+                                                <div class="media-left">
+                                                    <a class="avatar" href="javascript:void(0)">
+                                                        <img class="img-responsive" src="/static/portraits/default.png" alt="...">
+                                                    </a>
+                                                </div>
+                                                <div class="media-body">
+                                                    <h4 class="media-heading">
+                                                        <a class="search-result-link" href="/author/{{author}}">{{author}}</a>
+                                                    </h4>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>-->
+                            </div>
                         </div>
-                        <div class="media-body">
-                          <h4 class="media-heading"><a class="search-result-link" href="/author/{{author}}">{{author}}</a>
-
-                          </h4>
-
-                          <!--<div class="profile-brief">“Check if it can be corrected with overflow : hidden”</div>-->
-                        </div>
-                      </div>
-                    </li>
-{% endfor %}
-
-                  </ul>
+                    </div>
+                    <!-- End Panel -->
                 </div>
-              </div>
             </div>
-          </div>
-          <!-- End Panel -->
         </div>
-      </div>
     </div>
-  </div>
-  <!-- End Page -->
+    <!-- End Page -->
 
 
   <!-- Footer -->

@@ -4,9 +4,8 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
-    <meta name="description" content="bootstrap admin template">
-    <meta name="author" content="">
-
+    <meta name="description" content="Search Result Page">
+    <meta name="author" content="Web Information Systems | TU Delft">
     <title>Search Result | SmartPub</title>
 
     <link rel="apple-touch-icon" href="/static/images/apple-touch-icon.png">
@@ -36,15 +35,6 @@
     <!-- Inline -->
     <link rel="stylesheet" href="/static/examples/css/pages/search-result.css">
 
-    <!--[if lt IE 9]>
-    <script src="..//static/vendor/html5shiv/html5shiv.min.js"></script>
-    <![endif]-->
-
-    <!--[if lt IE 10]>
-    <script src="..//static/vendor/media-match/media.match.min.js"></script>
-    <script src="..//static/vendor/respond/respond.min.js"></script>
-    <![endif]-->
-
     <!-- Scripts -->
     <script src="/static/vendor/modernizr/modernizr.js"></script>
     <script src="/static/vendor/breakpoints/breakpoints.js"></script>
@@ -53,491 +43,482 @@
     </script>
 </head>
 <body class="page-search">
-<nav class="site-navbar navbar navbar-default navbar-fixed-top navbar-mega" role="navigation">
-    <div class="navbar-container container-fluid">
-        <!-- Navbar Collapse -->
-        <div class="collapse navbar-collapse navbar-collapse-toolbar" id="site-navbar-collapse">
-            <form class="page-search-form" role="search" action="search-result" method="post">
-                <div class="input-search input-search-dark" style="top: 20px;" align="center" >
-                    <!--<i class="input-search-icon wb-search" aria-hidden="true"></i>-->
-                    <input type="text" class="form-control" name="search" placeholder="Search..." size="30">
-                    <input type="submit" />
-
-                </div>
-            </form>
-            <!-- Navbar Toolbar -->
-
-            <!-- End Navbar Toolbar -->
-
-            <!-- Navbar Toolbar Right -->
-
-            <!-- End Navbar Toolbar Right -->
-        </div>
-        <!-- End Navbar Collapse -->
-
-        <!-- Site Navbar Seach -->
-        <!-- End Site Navbar Seach -->
-    </div>
-</nav>
-
-
-<!-- Page -->
-<div class="page animsition">
-    <div class="page-content container-fluid" style="padding-left: 0px;padding-right: 0px; width: 95%; ">
-        <div class="row">
-            <div class="col-md-2">
-                <!-- Page Widget -->
-                 <div class="panel">
-                    <div class="panel-body" style="padding-right: 5px; padding-left: 5px;">
-
-                            <h3 align="center">Filters</h3>
-                       <!-- <hr />
-                            <div>
-
-                                <select id="multiselect-ui1" class="multiselect-ui form-control my-dropdown" multiple="multiple">
-                                    <option value="ESWC" >ESWC</option>
-                                    <option value="ICWSM">ICWSM</option>
-                                    <option value="VLDB">VLDB</option>
-                                    <option value="WWW">WWW</option>
-                                    <option value="SIGIR">SIGIR</option>
-
-                                    <option value="TREC">TREC</option>
-                                    <option value="ECDL">ECDL</option>
-                                    <option value="TPDL">TPDL</option>
-                                    <option value="ICSE">ICSE</option>
-                                    <option value="JCDL">JCDL</option>
-                                    <option value="ICDM">ICDM</option>
-                                </select>
-                            </div> -->
-                            <hr />
-                            <div align="center">
-                                <select id="multiselect-ui2" class="multiselect-ui form-control my-dropdown" multiple="multiple">
-                                    
-                                    <option value="2015" >Since 2015</option>
-                                    <option value="2010">Since 2010</option>
-                                    <option value="2005">Since 2005</option>
-                                    <option value="2000">Since 2000</option>
-
-                                </select>
-                            </div>
-                    </div>
-                </div>
-                <!-- End Page Widget -->
+    <nav class="site-navbar navbar navbar-default navbar-fixed-top navbar-mega" role="navigation">
+        <div class="navbar-container container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="glyphicon glyphicon-arrow-down">Menu</span>
+                </button>
             </div>
-            <div class="col-md-7">
-                <!-- Panel -->
-                <div class="panel">
-                    <div class="panel-body">
-
-                        <h1 class="page-search-title">Search Results For {{search_text}}</h1>
-                        <p class="page-search-count">About
-                            <span>15</span> result (
-                            <span>0.35</span> seconds)</p>
-                        <ul class="list-group list-group-full list-group-dividered">
-                            {% for id, title,journal,year,authors in zipped_lists %}
-                            <li class="list-group-item">
-                                <h4><a class="search-result-link" href="/publication/{{ id }}">{{ title }}</a></h4>
-                                <!--<table>-->
-                                <!--<tr>-->
-                                {% for author in authors %}
-                                <span style="display: inline-block"><a class="search-result-link" href="/author/{{author}}"> {{author}} &nbsp</a></span>
-
-                                <!--<td><a class="search-result-link" href="http://127.0.0.1:5000/author/{{author}}"> {{author}}, &nbsp</a> </td>-->
-
-
-                                {% endfor %}
-                                <!--</tr></table>-->
-                                <!--<a class="search-result-link" href="http://127.0.0.1:5000/publication/{{ id }}">{{ authors }}</a>-->
-                                <small style="display: block">{{ journal}}, &nbsp {{ year}} </small>
-
-                                {% endfor %}
-
-                                <!--{% for list1item in title %}-->
-                                <!--{% for list2item in journal %}-->
-
-                                <!--{% for list3item in year %}-->
-
-                                <!--<li class="list-group-item">-->
-                                <!--<h4><a href="https://github.com/amazingSurge?tab=repositories">{{ list1item }}</a></h4>-->
-                                <!--<a class="search-result-link" href="https://github.com/amazingSurge?tab=repositories">{{ list2item }}</a>-->
-                                <!--<p>{{ list3item}} </p>-->
-
-
-                                <!--{% endfor %}-->
-
-                                <!--{% endfor %}-->
-                                <!--{% endfor %}-->
-                            </li>
-                            <!--<li class="list-group-item">-->
-                            <!--<h4><a href="https://github.com/amazingSurge?tab=repositories">Parum Interiret Consequatur</a></h4>-->
-                            <!--<a class="search-result-link" href="https://github.com/amazingSurge?tab=repositories">https://github.com/amazingSurge?tab=repositories</a>-->
-                            <!--<p>Regula magnosque ait. Rebus intellegimus occulte instituendarum quoniam-->
-                            <!--fabulae.Regula magnosque ait. Rebus intellegimus occulte instituendarum-->
-                            <!--quoniam fabulae.</p>-->
-                            <!--</li>-->
-                            <!--<li class="list-group-item">-->
-                            <!--<h4><a href="https://github.com/amazingSurge?tab=repositories">Afficitur Nos Veritus</a></h4>-->
-                            <!--<a class="search-result-link" href="https://github.com/amazingSurge?tab=repositories">https://github.com/amazingSurge?tab=repositories</a>-->
-                            <!--<p>Elaboraret animum primo. Civibus assueverit consequatur affert viros-->
-                            <!--scribi.Elaboraret animum primo. Civibus assueverit consequatur-->
-                            <!--affert viros scribi.</p>-->
-                            <!--</li>-->
-                            <!--<li class="list-group-item">-->
-                            <!--<h4><a href="https://github.com/amazingSurge?tab=repositories">Tamquam Secumque Nacti</a></h4>-->
-                            <!--<a class="search-result-link" href="https://github.com/amazingSurge?tab=repositories">https://github.com/amazingSurge?tab=repositories</a>-->
-                            <!--<p>Pronuntiaret liberos probes horribiles acri ita seiunctum aristippus.-->
-                            <!--Humili.Pronuntiaret liberos probes horribiles acri ita seiunctum-->
-                            <!--aristippus. Humili.Pronuntiaret liberos probes horribiles acri-->
-                            <!--ita seiunctum aristippus. Humili.</p>-->
-                            <!--</li>-->
-                            <!--<li class="list-group-item">-->
-                            <!--<h4><a href="https://github.com/amazingSurge?tab=repositories">Aliquo Difficile In</a></h4>-->
-                            <!--<a class="search-result-link" href="https://github.com/amazingSurge?tab=repositories">https://github.com/amazingSurge?tab=repositories</a>-->
-                            <!--<p>Omnes arbitrer ancillae fictae maximam renovata, fieri pecuniae mundus.Omnes-->
-                            <!--arbitrer ancillae fictae maximam renovata, fieri pecuniae mundus.</p>-->
-                            <!--</li>-->
-                            <!--<li class="list-group-item">-->
-                            <!--<h4><a href="https://github.com/amazingSurge?tab=repositories">Quale Momenti Eitam</a></h4>-->
-                            <!--<a class="search-result-link" href="https://github.com/amazingSurge?tab=repositories">https://github.com/amazingSurge?tab=repositories</a>-->
-                            <!--<p>Perpetiuntur inportuno iudicio errem. Reperire aliud delectus referta-->
-                            <!--fruuntur.Perpetiuntur inportuno iudicio errem. Reperire aliud delectus-->
-                            <!--referta fruuntur.</p>-->
-                            <!--</li>-->
-                            <!--</ul>-->
-                            <!--<nav>-->
-                            <!--<ul class="pagination pagination-no-border">-->
-                            <!--<li class="disabled">-->
-                            <!--<a href="javascript:void(0)" aria-label="Previous">-->
-                            <!--<span aria-hidden="true">&laquo;</span>-->
-                            <!--</a>-->
-                            <!--</li>-->
-                            <!--<li class="active"><a href="javascript:void(0)">1 <span class="sr-only">(current)</span></a></li>-->
-                            <!--<li><a href="javascript:void(0)">2</a></li>-->
-                            <!--<li><a href="javascript:void(0)">3</a></li>-->
-                            <!--<li><a href="javascript:void(0)">4</a></li>-->
-                            <!--<li><a href="javascript:void(0)">5</a></li>-->
-                            <!--<li>-->
-                            <!--<a href="javascript:void(0)" aria-label="Next">-->
-                            <!--<span aria-hidden="true">&raquo;</span>-->
-                            <!--</a>-->
-                            <!--</li>-->
-                        </ul>
-                        </nav>
-                    </div>
-                </div>
-                <!-- End Panel -->
-            </div>
-            <div class="col-md-3">
-                <!-- Page Widget -->
-                <div class="panel">
-                    <div class="panel-body" style="padding-right: 5px; padding-left: 5px;">
-                        <div class="widget-header-content">
-
-                            <!--<a class="avatar avatar-lg" href="javascript:void(0)">-->
-                            <!--&lt;!&ndash;<img src="/static/portraits/default.png" alt="...">&ndash;&gt;-->
-                            <!--</a>-->
-                            <h3 align="center" style="margin-top: 0px;">General Overview</h3>
-                            <hr />
-                            <canvas id="lineChart4" ></canvas>
-
-                            <hr />
-                            <!--<div  id="chart"></div>-->
-                            <h4 align="center" style="margin-top: 0px;">Popular Dataset Entities</h4>
-                             {% for datent in dataset_popular_entities %}
-                      <li class="list-group-item">
-
-                      <h5><a href="/entities/dataset/{{datent[0]}}">{{datent[0]}}</a></h5>
-                <!--<table>-->
-                  <!--<tr>-->
-
-
-                            </li>
-                            {% endfor %}
-                            <hr />
-                            <h4 align="center" style="margin-top: 0px;">Popular Method Entities</h4>
-                             {% for metent in method_popular_entities %}
-                      <li class="list-group-item">
-
-                      <h5><a href="/entities/method/{{metent[0]}}">{{metent[0]}}</a></h5>
-                <!--<table>-->
-                  <!--<tr>-->
-
-
-                            </li>
-                            {% endfor %}
+            <div class="collapse navbar-collapse" id="collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="/" style="color:skyblue">Home</a></li>
+                    <li><a href="https://github.com/mvallet91/SmartPub-TSENER" style="color:skyblue">About</a></li>
+                    <li><a href="/entities/method/named%20entity%20recognition" style="color:skyblue">Entities</a></li>
+                    <li><a href="/dashapp/" style="color:skyblue">Stats</a></li>
+                </ul>
+                <div class="col-lg-8 col-sm-3">
+                    <form class="page-search-form" role="search" action='/search-result' method="post">
+                        <div class="input-search input-search-dark" style="top: 20px;" align="center" >
+                            <input type="text" class="form-control" name="search" placeholder="Search..." size="30">
+                            <input type="submit"/>
                         </div>
-
-                    </div>
+                    </form>
                 </div>
-                <!-- End Page Widget -->
+            </div>
+            <!-- Navbar Collapse -->
+            <!--<div class="col-md-1">-->
+                <!--<a href="/" style="color:skyblue; font-weight:bold">Home</a>-->
+            <!--</div>-->
+            <!--<div class="collapse navbar-collapse navbar-collapse-toolbar" id="site-navbar-collapse">-->
+                <!--<form class="page-search-form" role="search" action='/search-result' method="post">-->
+                    <!--<div class="input-search input-search-dark" style="top: 20px;" align="center" >-->
+                        <!--<input type="text" class="form-control" name="search" placeholder="Search..." size="30">-->
+                        <!--<input type="submit" />-->
+                    <!--</div>-->
+                <!--</form>-->
+            <!--&lt;!&ndash; Navbar Toolbar &ndash;&gt;-->
+            <!--&lt;!&ndash; End Navbar Toolbar &ndash;&gt;-->
+            <!--&lt;!&ndash; Navbar Toolbar Right &ndash;&gt;-->
+            <!--&lt;!&ndash; End Navbar Toolbar Right &ndash;&gt;-->
+            <!--</div>-->
+            <!-- End Navbar Collapse -->
+            <!-- Site Navbar Seach -->
+            <!-- End Site Navbar Seach -->
+        </div>
+    </nav>
+
+    <!-- Page -->
+    <div class="page animsition">
+        <div class="page-content container-fluid" style="padding-left: 0px;padding-right: 0px; width: 95%; ">
+            <div class="row">
+                <div class="col-md-2">
+                    <!-- Page Widget -->
+                     <div class="panel">
+                        <div class="panel-body" style="padding-right: 5px; padding-left: 5px;">
+                                <h3 align="center">Filters</h3>
+                           <!-- <div>
+                                    <select id="multiselect-ui1" class="multiselect-ui form-control my-dropdown" multiple="multiple">
+                                        <option value="ESWC" >ESWC</option>
+                                        <option value="ICWSM">ICWSM</option>
+                                        <option value="VLDB">VLDB</option>
+                                        <option value="WWW">WWW</option>
+                                        <option value="SIGIR">SIGIR</option>
+
+                                        <option value="TREC">TREC</option>
+                                        <option value="ECDL">ECDL</option>
+                                        <option value="TPDL">TPDL</option>
+                                        <option value="ICSE">ICSE</option>
+                                        <option value="JCDL">JCDL</option>
+                                        <option value="ICDM">ICDM</option>
+                                    </select>
+                                </div> -->
+                                <hr />
+                                <div align="center">
+                                    <select id="multiselect-ui2" class="multiselect-ui form-control my-dropdown" multiple="multiple">
+                                        <option value="2015" >Since 2015</option>
+                                        <option value="2010">Since 2010</option>
+                                        <option value="2005">Since 2005</option>
+                                        <option value="2000">Since 2000</option>
+                                    </select>
+                                </div>
+                        </div>
+                    </div>
+                    <!-- End Page Widget -->
+                </div>
+                <div class="col-md-7">
+                    <!-- Panel -->
+                    <div class="panel">
+                        <div class="panel-body">
+
+                            <h1 class="page-search-title">Search Results For {{search_text}}</h1>
+                            <p class="page-search-count">About
+                                <span>15</span> result (
+                                <span>0.35</span> seconds)</p>
+                            <ul class="list-group list-group-full list-group-dividered">
+                                {% for id, title,journal,year,authors in zipped_lists %}
+                                <li class="list-group-item">
+                                    <h4><a class="search-result-link" href="/publication/{{ id }}">{{ title }}</a></h4>
+                                    <!--<table>-->
+                                    <!--<tr>-->
+                                    {% for author in authors %}
+                                    <span style="display: inline-block"><a class="search-result-link" href="/author/{{author}}"> {{author}} &nbsp</a></span>
+
+                                    <!--<td><a class="search-result-link" href="http://127.0.0.1:5000/author/{{author}}"> {{author}}, &nbsp</a> </td>-->
+
+
+                                    {% endfor %}
+                                    <!--</tr></table>-->
+                                    <!--<a class="search-result-link" href="http://127.0.0.1:5000/publication/{{ id }}">{{ authors }}</a>-->
+                                    <small style="display: block">{{ journal}}, &nbsp {{ year}} </small>
+
+                                    {% endfor %}
+
+                                    <!--{% for list1item in title %}-->
+                                    <!--{% for list2item in journal %}-->
+
+                                    <!--{% for list3item in year %}-->
+
+                                    <!--<li class="list-group-item">-->
+                                    <!--<h4><a href="https://github.com/amazingSurge?tab=repositories">{{ list1item }}</a></h4>-->
+                                    <!--<a class="search-result-link" href="https://github.com/amazingSurge?tab=repositories">{{ list2item }}</a>-->
+                                    <!--<p>{{ list3item}} </p>-->
+
+
+                                    <!--{% endfor %}-->
+
+                                    <!--{% endfor %}-->
+                                    <!--{% endfor %}-->
+                                </li>
+                                <!--<li class="list-group-item">-->
+                                <!--<h4><a href="https://github.com/amazingSurge?tab=repositories">Parum Interiret Consequatur</a></h4>-->
+                                <!--<a class="search-result-link" href="https://github.com/amazingSurge?tab=repositories">https://github.com/amazingSurge?tab=repositories</a>-->
+                                <!--<p>Regula magnosque ait. Rebus intellegimus occulte instituendarum quoniam-->
+                                <!--fabulae.Regula magnosque ait. Rebus intellegimus occulte instituendarum-->
+                                <!--quoniam fabulae.</p>-->
+                                <!--</li>-->
+                                <!--<li class="list-group-item">-->
+                                <!--<h4><a href="https://github.com/amazingSurge?tab=repositories">Afficitur Nos Veritus</a></h4>-->
+                                <!--<a class="search-result-link" href="https://github.com/amazingSurge?tab=repositories">https://github.com/amazingSurge?tab=repositories</a>-->
+                                <!--<p>Elaboraret animum primo. Civibus assueverit consequatur affert viros-->
+                                <!--scribi.Elaboraret animum primo. Civibus assueverit consequatur-->
+                                <!--affert viros scribi.</p>-->
+                                <!--</li>-->
+                                <!--<li class="list-group-item">-->
+                                <!--<h4><a href="https://github.com/amazingSurge?tab=repositories">Tamquam Secumque Nacti</a></h4>-->
+                                <!--<a class="search-result-link" href="https://github.com/amazingSurge?tab=repositories">https://github.com/amazingSurge?tab=repositories</a>-->
+                                <!--<p>Pronuntiaret liberos probes horribiles acri ita seiunctum aristippus.-->
+                                <!--Humili.Pronuntiaret liberos probes horribiles acri ita seiunctum-->
+                                <!--aristippus. Humili.Pronuntiaret liberos probes horribiles acri-->
+                                <!--ita seiunctum aristippus. Humili.</p>-->
+                                <!--</li>-->
+                                <!--<li class="list-group-item">-->
+                                <!--<h4><a href="https://github.com/amazingSurge?tab=repositories">Aliquo Difficile In</a></h4>-->
+                                <!--<a class="search-result-link" href="https://github.com/amazingSurge?tab=repositories">https://github.com/amazingSurge?tab=repositories</a>-->
+                                <!--<p>Omnes arbitrer ancillae fictae maximam renovata, fieri pecuniae mundus.Omnes-->
+                                <!--arbitrer ancillae fictae maximam renovata, fieri pecuniae mundus.</p>-->
+                                <!--</li>-->
+                                <!--<li class="list-group-item">-->
+                                <!--<h4><a href="https://github.com/amazingSurge?tab=repositories">Quale Momenti Eitam</a></h4>-->
+                                <!--<a class="search-result-link" href="https://github.com/amazingSurge?tab=repositories">https://github.com/amazingSurge?tab=repositories</a>-->
+                                <!--<p>Perpetiuntur inportuno iudicio errem. Reperire aliud delectus referta-->
+                                <!--fruuntur.Perpetiuntur inportuno iudicio errem. Reperire aliud delectus-->
+                                <!--referta fruuntur.</p>-->
+                                <!--</li>-->
+                                <!--</ul>-->
+                                <!--<nav>-->
+                                <!--<ul class="pagination pagination-no-border">-->
+                                <!--<li class="disabled">-->
+                                <!--<a href="javascript:void(0)" aria-label="Previous">-->
+                                <!--<span aria-hidden="true">&laquo;</span>-->
+                                <!--</a>-->
+                                <!--</li>-->
+                                <!--<li class="active"><a href="javascript:void(0)">1 <span class="sr-only">(current)</span></a></li>-->
+                                <!--<li><a href="javascript:void(0)">2</a></li>-->
+                                <!--<li><a href="javascript:void(0)">3</a></li>-->
+                                <!--<li><a href="javascript:void(0)">4</a></li>-->
+                                <!--<li><a href="javascript:void(0)">5</a></li>-->
+                                <!--<li>-->
+                                <!--<a href="javascript:void(0)" aria-label="Next">-->
+                                <!--<span aria-hidden="true">&raquo;</span>-->
+                                <!--</a>-->
+                                <!--</li>-->
+                            </ul>
+                            </nav>
+                        </div>
+                    </div>
+                    <!-- End Panel -->
+                </div>
+                <div class="col-md-3">
+                    <!-- Page Widget -->
+                    <div class="panel">
+                        <div class="panel-body" style="padding-right: 5px; padding-left: 5px;">
+                            <div class="widget-header-content">
+                                <h3 align="center" style="margin-top: 0px;">General Overview</h3>
+                                <hr />
+                                <canvas id="lineChart4" ></canvas>
+                                <hr />
+                                <h4 align="center" style="margin-top: 0px;">Popular Dataset Entities</h4>
+                                 {% for datent in dataset_popular_entities %}
+                          <li class="list-group-item">
+                          <h5><a href="/entities/dataset/{{datent[0]}}">{{datent[0]}}</a></h5>
+                                </li>
+                                {% endfor %}
+                                <hr />
+                                <h4 align="center" style="margin-top: 0px;">Popular Method Entities</h4>
+                                 {% for metent in method_popular_entities %}
+                          <li class="list-group-item">
+                          <h5><a href="/entities/method/{{metent[0]}}">{{metent[0]}}</a></h5>
+                          </li>
+                                {% endfor %}
+                            </div>
+
+                        </div>
+                    </div>
+                    <!-- End Page Widget -->
+                </div>
             </div>
         </div>
     </div>
-</div>
-<!-- End Page -->
+    <!-- End Page -->
 
 
-<!-- Footer -->
-<footer class="site-footer">
-    <span class="site-footer-legal">© 2018 <a href="https://github.com/mvallet91/SmartPub-TSENER">SmartPub</a></span>
-    <!--<div class="site-footer-right">-->
-    <!--Crafted with <i class="red-600 wb wb-heart"></i> by <a href="http://themeforest.net/user/amazingSurge">amazingSurge</a>-->
-    <!--</div>-->
-</footer>
-<!-- Core  -->
-<script src="/static/vendor/jquery/jquery.js"></script>
-<script src="/static/vendor/bootstrap/bootstrap.js"></script>
-<script src="/static/vendor/animsition/jquery.animsition.js"></script>
-<script src="/static/vendor/asscroll/jquery-asScroll.js"></script>
-<script src="/static/vendor/mousewheel/jquery.mousewheel.js"></script>
-<script src="/static/vendor/asscrollable/jquery.asScrollable.all.js"></script>
-<script src="/static/vendor/ashoverscroll/jquery-asHoverScroll.js"></script>
+    <!-- Footer -->
+    <footer class="site-footer">
+        <span class="site-footer-legal">© 2018 <a href="https://github.com/mvallet91/SmartPub-TSENER">SmartPub</a></span>
+        <!--<div class="site-footer-right">-->
+        <!--Crafted with <i class="red-600 wb wb-heart"></i> by <a href="http://themeforest.net/user/amazingSurge">amazingSurge</a>-->
+        <!--</div>-->
+    </footer>
+    <!-- Core  -->
+    <script src="/static/vendor/jquery/jquery.js"></script>
+    <script src="/static/vendor/bootstrap/bootstrap.js"></script>
+    <script src="/static/vendor/animsition/jquery.animsition.js"></script>
+    <script src="/static/vendor/asscroll/jquery-asScroll.js"></script>
+    <script src="/static/vendor/mousewheel/jquery.mousewheel.js"></script>
+    <script src="/static/vendor/asscrollable/jquery.asScrollable.all.js"></script>
+    <script src="/static/vendor/ashoverscroll/jquery-asHoverScroll.js"></script>
 
-<!-- Plugins -->
-<script src="/static/vendor/switchery/switchery.min.js"></script>
-<script src="/static/vendor/intro-js/intro.js"></script>
-<script src="/static/vendor/screenfull/screenfull.js"></script>
-<script src="/static/vendor/slidepanel/jquery-slidePanel.js"></script>
+    <!-- Plugins -->
+    <script src="/static/vendor/switchery/switchery.min.js"></script>
+    <script src="/static/vendor/intro-js/intro.js"></script>
+    <script src="/static/vendor/screenfull/screenfull.js"></script>
+    <script src="/static/vendor/slidepanel/jquery-slidePanel.js"></script>
 
-<!-- Scripts -->
-<script src="/static/js/core.js"></script>
-<script src="/static/js/site.js"></script>
+    <!-- Scripts -->
+    <script src="/static/js/core.js"></script>
+    <script src="/static/js/site.js"></script>
 
-<script src="/static/js/sections/menu.js"></script>
-<script src="/static/js/sections/menubar.js"></script>
-<script src="/static/js/sections/gridmenu.js"></script>
-<script src="/static/js/sections/sidebar.js"></script>
-<script src="/static/js/bootstrap-multiselect.js"></script>
-<!--<script src="/static/js/Chart.min.js"></script>-->
-<script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js"></script>
+    <script src="/static/js/sections/menu.js"></script>
+    <script src="/static/js/sections/menubar.js"></script>
+    <script src="/static/js/sections/gridmenu.js"></script>
+    <script src="/static/js/sections/sidebar.js"></script>
+    <script src="/static/js/bootstrap-multiselect.js"></script>
+    <!--<script src="/static/js/Chart.min.js"></script>-->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js"></script>
 
-<script src="/static/js/configs/config-colors.js"></script>
-<script src="/static/js/configs/config-tour.js"></script>
+    <script src="/static/js/configs/config-colors.js"></script>
+    <script src="/static/js/configs/config-tour.js"></script>
 
-<script src="/static/js/components/asscrollable.js"></script>
-<script src="/static/js/components/animsition.js"></script>
-<script src="/static/js/components/slidepanel.js"></script>
-<script src="/static/js/components/switchery.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.4.5/js/mdb.min.js"></script>
+    <script src="/static/js/components/asscrollable.js"></script>
+    <script src="/static/js/components/animsition.js"></script>
+    <script src="/static/js/components/slidepanel.js"></script>
+    <script src="/static/js/components/switchery.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.4.5/js/mdb.min.js"></script>
 
+    <script src="https://rawgit.com/jasondavies/d3-cloud/master/build/d3.layout.cloud.js"></script>
 
+    <!-- Scripts For This Page -->
+    <script>
+        (function(document, window, $) {
+            'use strict';
 
-<script src="https://rawgit.com/jasondavies/d3-cloud/master/build/d3.layout.cloud.js"></script>
+            var Site = window.Site;
+            $(document).ready(function() {
+                Site.run();
+            });
+        })(document, window, jQuery);
+    </script>
 
+    <script type="text/javascript">
+        // Using jQuery.
 
-<!-- Scripts For This Page -->
+        $(function() {
+            $('form').each(function() {
+                $(this).find('input').keypress(function(e) {
+                    // Enter pressed?
+                    if(e.which == 10 || e.which == 13) {
+                        this.form.submit();
+                    }
+                });
 
-
-<script>
-    (function(document, window, $) {
-        'use strict';
-
-        var Site = window.Site;
-        $(document).ready(function() {
-            Site.run();
+                $(this).find('input[type=submit]').hide();
+            });
         });
-    })(document, window, jQuery);
-</script>
+    </script>
+    <!--<script type="text/javascript">
+        $(function() {
+            var format = d3.time.format("%Y");
 
-<script type="text/javascript">
-    // Using jQuery.
-
-    $(function() {
-        $('form').each(function() {
-            $(this).find('input').keypress(function(e) {
-                // Enter pressed?
-                if(e.which == 10 || e.which == 13) {
-                    this.form.submit();
+            $('#multiselect-ui1').multiselect({
+                includeSelectAllOption: true,
+                onChange: function(option, checked, select) {
+                    console.log(option.val());
+    //            console.log(checked);
+    //            console.log(select);
+    //            if(checked) {
+    ////                initChart("{{entity_name}}");
+    //                var values = $('.multiselect-ui').val();
+    //                console.log(values);
+    //            }
                 }
             });
+       $('.multiselect-ui').multiselect('selectAll', false);
+    //    $('.multiselect-ui').multiselect('updateButtonText');
 
-            $(this).find('input[type=submit]').hide();
         });
-    });
-</script>
-<!--<script type="text/javascript">
-    $(function() {
-        var format = d3.time.format("%Y");
+    </script>-->
+    <script type="text/javascript">
 
-        $('#multiselect-ui1').multiselect({
-            includeSelectAllOption: true,
-            onChange: function(option, checked, select) {
-                console.log(option.val());
-//            console.log(checked);
-//            console.log(select);
-//            if(checked) {
-////                initChart("{{entity_name}}");
-//                var values = $('.multiselect-ui').val();
-//                console.log(values);
-//            }
+        var timer;
+        var waitTime = 90000000000000;
+        $('#multiselect-ui1').change( function(event) {
+
+            if(timer)clearTimeout(timer);
+
+            timer = setTimeout(function(){
+                var values = $('.multiselect-ui').val();
+                console.log(values.toString());
+    //     updateChart(values.toString())
+            },waitTime);
+
+        });
+    </script>
+
+
+
+    <script type="text/javascript">
+        $(function() {
+            var format = d3.time.format("%Y");
+            $('#multiselect-ui2').multiselect({
+    //             includeSelectAllOption: true,
+                nonSelectedText: 'PUBLICATION YEAR',
+                onChange: function(option, checked, select) {
+    //            console.log(option.val());
+    //            console.log(checked);
+    //            console.log(select);
+               if(checked) {
+                   initChart("{{entity_name}}");
+                   var values = $('.multiselect-ui').val();
+    //                console.log(values);
+                   }
+              }
+            });
+    //        $('.multiselect-ui').multiselect('selectAll', false);
+    //        $('.multiselect-ui').multiselect('updateButtonText');
+        });
+    </script>
+
+    <script>
+        var ctxL = document.getElementById("lineChart4").getContext('2d');
+        var myLineChart = new Chart(ctxL, {
+            type: 'line',
+            data: {
+                labels: [{% for item in overview_label %}
+                          "{{item}}",
+                          {% endfor %}],
+                datasets: [
+                    {
+                        label: "#Publications",
+                        fillColor: "rgba(63, 61, 179, 1)",
+                        strokeColor: "rgba(20, 0, 240, 1)",
+                        pointColor: "rgba(20, 0, 240, 1)",
+                        pointStrokeColor: "#fff",
+                        pointHighlightFill: "#fff",
+                        pointHighlightStroke: "rgba(61, 179, 169, 1)",
+                        data: [{% for item in overview_count %}
+                              {{item}},
+                              {% endfor %}]
+                    }
+                ]
+            },
+            options: {
+                responsive: true
             }
         });
-   $('.multiselect-ui').multiselect('selectAll', false);
-//    $('.multiselect-ui').multiselect('updateButtonText');
+    </script>
+    <script>
+        var text_string = '{{word_cloud}}'
+        drawWordCloud(text_string);
 
-    });
-</script>-->
-<script type="text/javascript">
+        function drawWordCloud(text_string){
+            var common = "nand,introduction,poop,i,me,my,myself,we,us,our,ours,ourselves,you,your,yours,yourself,yourselves,he,him,his,himself,she,her,hers,herself,it,its,itself,they,them,their,theirs,themselves,what,which,who,whom,whose,this,that,these,those,am,is,are,was,were,be,been,being,have,has,had,having,do,does,did,doing,will,would,should,can,could,ought,i'm,you're,he's,she's,it's,we're,they're,i've,you've,we've,they've,i'd,you'd,he'd,she'd,we'd,they'd,i'll,you'll,he'll,she'll,we'll,they'll,isn't,aren't,wasn't,weren't,hasn't,haven't,hadn't,doesn't,don't,didn't,won't,wouldn't,shan't,shouldn't,can't,cannot,couldn't,mustn't,let's,that's,who's,what's,here's,there's,when's,where's,why's,how's,a,an,the,and,but,if,or,because,as,until,while,of,at,by,for,with,about,against,between,into,through,during,before,after,above,below,to,from,up,upon,down,in,out,on,off,over,under,again,further,then,once,here,there,when,where,why,how,all,any,both,each,few,more,most,other,some,such,no,nor,not,only,own,same,so,than,too,very,say,says,said,shall";
 
-    var timer;
-    var waitTime = 90000000000000;
-    $('#multiselect-ui1').change( function(event) {
+            var word_count = {};
 
-        if(timer)clearTimeout(timer);
-
-        timer = setTimeout(function(){
-            var values = $('.multiselect-ui').val();
-            console.log(values.toString());
-//     updateChart(values.toString())
-        },waitTime);
-
-    });
-</script>
-
-
-
-<script type="text/javascript">
-    $(function() {
-        var format = d3.time.format("%Y");
-        $('#multiselect-ui2').multiselect({
-//             includeSelectAllOption: true,
-            nonSelectedText: 'PUBLICATION YEAR',
-            onChange: function(option, checked, select) {
-//            console.log(option.val());
-//            console.log(checked);
-//            console.log(select);
-           if(checked) {
-               initChart("{{entity_name}}");
-               var values = $('.multiselect-ui').val();
-//                console.log(values);
-               }
-          }
-        });
-//        $('.multiselect-ui').multiselect('selectAll', false);
-//        $('.multiselect-ui').multiselect('updateButtonText');
-    });
-</script>
-    
-<script>
-    var ctxL = document.getElementById("lineChart4").getContext('2d');
-    var myLineChart = new Chart(ctxL, {
-        type: 'line',
-        data: {
-            labels: [{% for item in overview_label %}
-                      "{{item}}",
-                      {% endfor %}],
-            datasets: [
-                {
-                    label: "#Publications",
-                    fillColor: "rgba(63, 61, 179, 1)",
-                    strokeColor: "rgba(20, 0, 240, 1)",
-                    pointColor: "rgba(20, 0, 240, 1)",
-                    pointStrokeColor: "#fff",
-                    pointHighlightFill: "#fff",
-                    pointHighlightStroke: "rgba(61, 179, 169, 1)",
-                    data: [{% for item in overview_count %}
-                          {{item}},
-                          {% endfor %}]
-                }
-            ]
-        },
-        options: {
-            responsive: true
-        }
-    });
-</script>
-<script>
-    var text_string = '{{word_cloud}}'
-    drawWordCloud(text_string);
-
-    function drawWordCloud(text_string){
-        var common = "nand,introduction,poop,i,me,my,myself,we,us,our,ours,ourselves,you,your,yours,yourself,yourselves,he,him,his,himself,she,her,hers,herself,it,its,itself,they,them,their,theirs,themselves,what,which,who,whom,whose,this,that,these,those,am,is,are,was,were,be,been,being,have,has,had,having,do,does,did,doing,will,would,should,can,could,ought,i'm,you're,he's,she's,it's,we're,they're,i've,you've,we've,they've,i'd,you'd,he'd,she'd,we'd,they'd,i'll,you'll,he'll,she'll,we'll,they'll,isn't,aren't,wasn't,weren't,hasn't,haven't,hadn't,doesn't,don't,didn't,won't,wouldn't,shan't,shouldn't,can't,cannot,couldn't,mustn't,let's,that's,who's,what's,here's,there's,when's,where's,why's,how's,a,an,the,and,but,if,or,because,as,until,while,of,at,by,for,with,about,against,between,into,through,during,before,after,above,below,to,from,up,upon,down,in,out,on,off,over,under,again,further,then,once,here,there,when,where,why,how,all,any,both,each,few,more,most,other,some,such,no,nor,not,only,own,same,so,than,too,very,say,says,said,shall";
-
-        var word_count = {};
-
-        var words = text_string.split(/['\-\(\)\*":;\[\]|{},.!?]+/);
-        if (words.length == 1){
-            word_count[words[0]] = 1;
-        } else {
-            words.forEach(function(word){
-                var word = word.toLowerCase();
-                if (word != "" && common.indexOf(word)==-1 && word.length>1){
-                    if (word_count[word]){
-                        word_count[word]++;
-                    } else {
-                        word_count[word] = 1;
-                    }
-                }
-            })
-        }
-
-        var svg_location = "#chart";
-        var width = 300;
-        var height = 200;
-
-        var fill = d3.scale.category20();
-
-        var word_entries = d3.entries(word_count);
-
-        var xScale = d3.scale.linear()
-                .domain([0, d3.max(word_entries, function(d) {
-                    return d.value;
-                })
-                ])
-                .range([10,25]);
-
-        d3.layout.cloud().size([width, height])
-                .timeInterval(20)
-                .words(word_entries)
-                .fontSize(function(d) { return xScale(+d.value); })
-                .text(function(d) { return d.key; })
-                .rotate(function() { return ~~(Math.random() * 2) * 90; })
-                .font("Impact")
-                .on("end", draw)
-                .start();
-
-        function draw(words) {
-            d3.select(svg_location).append("svg")
-                    .attr("width", width)
-                    .attr("height", height)
-                    .append("g")
-                    .attr("transform", "translate(" + [width >> 1, height >> 1] + ")")
-                    .selectAll("text")
-                    .data(words)
-                    .enter().append("text")
-                    .style("font-size", function(d) { return xScale(d.value) + "px"; })
-                    .style("font-family", "Impact")
-                    .style("fill", function(d, i) { return fill(i); })
-                    .attr("text-anchor", "middle")
-                    .attr("transform", function(d) {
-                        return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
-                    })
-                    .text(function(d) { return d.text; })
-                    .on("click", function (d, i){
-                        window.location = "/entities/"+d.text;
-                    })
-                    .on({
-                        "mouseover": function(d) {
-                            d3.select(this).style("cursor", "pointer")
-                        },
-                        "mouseout": function(d) {
-                            d3.select(this).style("cursor", "")
+            var words = text_string.split(/['\-\(\)\*":;\[\]|{},.!?]+/);
+            if (words.length == 1){
+                word_count[words[0]] = 1;
+            } else {
+                words.forEach(function(word){
+                    var word = word.toLowerCase();
+                    if (word != "" && common.indexOf(word)==-1 && word.length>1){
+                        if (word_count[word]){
+                            word_count[word]++;
+                        } else {
+                            word_count[word] = 1;
                         }
-                    });
-        }
+                    }
+                })
+            }
 
-        d3.layout.cloud().stop();
-    }
-    myCircle.on({
-        "mouseover": function(d) {
-            d3.select(this).style("cursor", "pointer")
-        },
-        "mouseout": function(d) {
-            d3.select(this).style("cursor", "")
-        }
-    });
+            var svg_location = "#chart";
+            var width = 300;
+            var height = 200;
 
-</script>
+            var fill = d3.scale.category20();
+
+            var word_entries = d3.entries(word_count);
+
+            var xScale = d3.scale.linear()
+                    .domain([0, d3.max(word_entries, function(d) {
+                        return d.value;
+                    })
+                    ])
+                    .range([10,25]);
+
+            d3.layout.cloud().size([width, height])
+                    .timeInterval(20)
+                    .words(word_entries)
+                    .fontSize(function(d) { return xScale(+d.value); })
+                    .text(function(d) { return d.key; })
+                    .rotate(function() { return ~~(Math.random() * 2) * 90; })
+                    .font("Impact")
+                    .on("end", draw)
+                    .start();
+
+            function draw(words) {
+                d3.select(svg_location).append("svg")
+                        .attr("width", width)
+                        .attr("height", height)
+                        .append("g")
+                        .attr("transform", "translate(" + [width >> 1, height >> 1] + ")")
+                        .selectAll("text")
+                        .data(words)
+                        .enter().append("text")
+                        .style("font-size", function(d) { return xScale(d.value) + "px"; })
+                        .style("font-family", "Impact")
+                        .style("fill", function(d, i) { return fill(i); })
+                        .attr("text-anchor", "middle")
+                        .attr("transform", function(d) {
+                            return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+                        })
+                        .text(function(d) { return d.text; })
+                        .on("click", function (d, i){
+                            window.location = "/entities/"+d.text;
+                        })
+                        .on({
+                            "mouseover": function(d) {
+                                d3.select(this).style("cursor", "pointer")
+                            },
+                            "mouseout": function(d) {
+                                d3.select(this).style("cursor", "")
+                            }
+                        });
+            }
+
+            d3.layout.cloud().stop();
+        }
+        myCircle.on({
+            "mouseover": function(d) {
+                d3.select(this).style("cursor", "pointer")
+            },
+            "mouseout": function(d) {
+                d3.select(this).style("cursor", "")
+            }
+        });
+    </script>  
 </body>
 
 </html>
