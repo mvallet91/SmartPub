@@ -5,3 +5,7 @@ app/modules/__pycache__
 app/modules/__pycache__/
 smartpub_env
 smartpub_env/
+app/credentials.txt
+app/secret_key.txt
+/app/credentials.txt
+/app/secret_key.txt

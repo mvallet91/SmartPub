@@ -12,6 +12,7 @@ from pymongo import MongoClient
 
 client = MongoClient('localhost:27017')
 db = client.pub
+smartpub_db = client.smartpub
 db_reddit = client.reddit_drug
 
 es = Elasticsearch([{'host': 'localhost', 'port': 9200}])
@@ -814,6 +815,18 @@ def select_sentence(entity):
 
     return finalsent
 
+
+def get_entity_info(entity):
+    occurrences = smartpub_db.entities.find({'clean': entity})
+    return [o for o in occurrences]
+
+
+def update_db_godmode(entity, label):
+    smartpub_db.entities.update_many({'clean': entity}, {'$set': {'Annotator_godmode': label}})
+    res = es.search(index=entities_index, doc_type='entities', body={"query": {"match_phrase": {"clean": entity}}}, size=5000)
+    for hit in res['hits']['hits']:
+        es.update(index=entities_index, doc_type="entities", id=hit['_id'], body={"doc": {"annotator": label}})
+        
 
 def entities_for_crowdsourcing():
     all_entities = db.vague_entities.find_one(no_cursor_timeout=True)

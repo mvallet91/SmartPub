@@ -2,6 +2,8 @@ from app import app
 import flask
 import datetime
 import dash
+import re
+import string
 
 import pandas as pd
 import dash_html_components as html
@@ -9,14 +11,42 @@ import dash_core_components as dcc
 import plotly.graph_objs as go
 import plotly.figure_factory as ff
 
-from flask import request, redirect, url_for
+from flask import request, redirect, url_for, session, flash
+from functools import wraps
 from app.modules import search_elastic
 from collections import Counter
 from elasticsearch import Elasticsearch
+from nltk.corpus import stopwords
 
 es = Elasticsearch(
     [{'host': 'localhost', 'port': 9200}], timeout=30, max_retries=10, retry_on_timeout=True
 )
+
+with open('/data2/SmartPub/app/secret_key.txt', 'r') as key:
+    app.secret_key = key.readline()
+
+
+def login_required(f):
+    @wraps(f)
+    def wrap(*args, **kwargs):
+        if 'logged_in' in session:
+            return f(*args, **kwargs)
+        else:
+            flash('You need to login first.')
+            return redirect(url_for('login', _external=True))
+    return wrap
+
+
+def token_stopword_filter(word: str):
+    tr = str.maketrans("", "", string.punctuation)
+    no_punctuation = word.translate(tr)
+    clean = ''.join([i for i in no_punctuation if not i.isdigit()])
+    filtered_word = ' '.join([t for t in clean.lower().split() if t not in stopwords.words('english')])
+    filtered_word = re.sub(r'\[[^)]*\]', '', filtered_word)
+    filtered_word = re.sub(u"[^\w\d'\s\-]+", '', filtered_word)
+
+    return filtered_word
+
 
 
 @app.route('/')
@@ -115,6 +145,60 @@ def publication(publication_id):
                                  zipped_lists=zip(id_list, title_list, journal_list, year_list, authors_list),
                                  abstract=abstract_list, method=method_entities, dataset=dataset_entities,
                                  url=paper_url)
+
+
+@app.route('/entity_search', methods=['GET', 'POST'])
+@login_required
+def find_entity():  
+    if request.method == 'GET':
+        return flask.render_template("entity_to_update.html")
+    if request.method == 'POST':
+        entity = request.form['entity']
+        clean_entity = token_stopword_filter(entity)
+        if clean_entity:
+            return redirect(url_for('.select_label', entity=clean_entity, _external=True))
+
+
+@app.route('/godmode', methods=['GET', 'POST'])
+@login_required
+def select_label():
+    if request.method == 'GET':
+        entity = request.args['entity']
+        info = search_elastic.get_entity_info(entity)
+        count = len(info)
+        return flask.render_template("godmode.html", entity=entity, count=count)
+    if request.method == 'POST':
+        label = request.form.get('optradio')
+        entity = request.form.get('ent')
+        if label and entity:
+            search_elastic.update_db_godmode(entity, label)
+            flash('Entity updated')
+        else:
+            flash('Entity not updated')
+        return redirect(url_for('find_entity', _external=True))
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    error = None
+    with open('/data2/SmartPub/app/credentials.txt', 'r') as cred_file:
+        credentials = cred_file.readlines()
+    credentials = [l.strip() for l in credentials]
+    if request.method == 'POST':
+        if request.form['username'] != credentials[0] or request.form['password'] != credentials[1]:
+            error = 'Invalid Credentials. Please try again.'
+        else:
+            session['logged_in'] = True
+            return flask.redirect(url_for('find_entity', _external=True))
+    return flask.render_template('login.html', error=error)
+
+
+@app.route('/logout')
+@login_required
+def logout():
+    session.pop('logged_in', None)
+    flash('You were logged out.')
+    return redirect(url_for('login', _external=True))
 
 
 # from app import app

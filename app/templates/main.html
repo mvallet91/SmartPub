@@ -32,15 +32,6 @@
   <!-- Inline -->
   <link rel="stylesheet" href="/static/examples/css/pages/search-result.css">
 
-  <!--[if lt IE 9]>
-    <script src="..//static/vendor/html5shiv/html5shiv.min.js"></script>
-    <![endif]-->
-
-  <!--[if lt IE 10]>
-    <script src="..//static/vendor/media-match/media.match.min.js"></script>
-    <script src="..//static/vendor/respond/respond.min.js"></script>
-    <![endif]-->
-
   <!-- Scripts -->
   <script src="/static/vendor/modernizr/modernizr.js"></script>
   <script src="/static/vendor/breakpoints/breakpoints.js"></script>
@@ -49,31 +40,22 @@
   </script>
 </head>
 <body class="page-search">
-  <!--[if lt IE 8]>
-        <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
-    <![endif]-->
-
-  <nav class="site-navbar navbar navbar-default navbar-fixed-top navbar-mega" role="navigation">
-
-
-    <div class="navbar-container container-fluid">
-      <!-- Navbar Collapse -->
-      <div class="collapse navbar-collapse navbar-collapse-toolbar" id="site-navbar-collapse">
-
-        <!-- Navbar Toolbar -->
-
-        <!-- End Navbar Toolbar -->
-
-        <!-- Navbar Toolbar Right -->
-
-        <!-- End Navbar Toolbar Right -->
-      </div>
-      <!-- End Navbar Collapse -->
-
-      <!-- Site Navbar Seach -->
-      <!-- End Site Navbar Seach -->
-    </div>
-  </nav>
+    <nav class="site-navbar navbar navbar-default navbar-fixed-top navbar-mega" role="navigation">
+        <div class="navbar-container container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="glyphicon glyphicon-arrow-down">Menu</span>
+                </button>
+            </div>
+            <div class="collapse navbar-collapse" id="collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="/login" style="color:skyblue">Admin</a></li>
+                    <li><a href="https://github.com/mvallet91/SmartPub-TSENER" style="color:skyblue">About</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 
 
 

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html class="no-js css-menubar" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+    <meta name="description" content="Annotation">
+    <meta name="author" content="WIS">
+
+    <title>Modify Entity Annotation</title>
+
+    <link rel="apple-touch-icon" href="/static/images/apple-touch-icon.png">
+    <link rel="shortcut icon" href="/static/images/favicon.ico">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/bootstrap-extend.min.css">
+    <link rel="stylesheet" href="/static/css/site.min.css">
+
+    <!-- Plugins -->
+    <link rel="stylesheet" href="/static/vendor/animsition/animsition.css">
+    <link rel="stylesheet" href="/static/vendor/asscrollable/asScrollable.css">
+    <link rel="stylesheet" href="/static/vendor/switchery/switchery.css">
+    <link rel="stylesheet" href="/static/vendor/intro-js/introjs.css">
+    <link rel="stylesheet" href="/static/vendor/slidepanel/slidePanel.css">
+    <link rel="stylesheet" href="/static/vendor/flag-icon-css/flag-icon.css">
+
+    <!-- Fonts -->
+    <link rel="stylesheet" href="/static/fonts/web-icons/web-icons.min.css">
+    <link rel="stylesheet" href="/static/fonts/brand-icons/brand-icons.min.css">
+    <link rel='stylesheet' href='http://fonts.googleapis.com/css?family=Roboto:300,400,500,300italic'>
+
+    <!-- Inline -->
+    <link rel="stylesheet" href="/static/examples/css/pages/search-result.css">
+
+    <!-- Scripts -->
+    <script src="/static/vendor/modernizr/modernizr.js"></script>
+    <script src="/static/vendor/breakpoints/breakpoints.js"></script>
+    <script>
+        Breakpoints();
+    </script>
+</head>
+<body class="page-search">
+    <nav class="site-navbar navbar navbar-default navbar-fixed-top navbar-mega" role="navigation">
+        <div class="navbar-container container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="glyphicon glyphicon-arrow-down">Menu</span>
+                </button>
+            </div>
+            <div class="collapse navbar-collapse" id="collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="/" style="color:skyblue">Home</a></li>
+                    <li><a href="https://github.com/mvallet91/SmartPub-TSENER" style="color:skyblue">About</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+<div class="container-fluid">
+    <h1>Please login</h1>
+    <br>
+    <form action="" method="post">
+        <input type="text" placeholder="Username" name="username" value="{{
+          request.form.username }}">
+        <input type="password" placeholder="Password" name="password" value="{{
+          request.form.password }}">
+        <input class="btn btn-default" type="submit" value="Login">
+    </form>
+    {% if error %}
+        <p class="error"><strong>Error:</strong> {{ error }}
+    {% endif %}
+    {% for message in get_flashed_messages() %}
+        {{ message }}
+    {% endfor %}
+</div>
+</body>
+</html>
