@@ -17,6 +17,8 @@ from app.modules import search_elastic
 from collections import Counter
 from elasticsearch import Elasticsearch
 from nltk.corpus import stopwords
+from flask_paginate import Pagination, get_page_args
+
 
 es = Elasticsearch(
     [{'host': 'localhost', 'port': 9200}], timeout=30, max_retries=10, retry_on_timeout=True
@@ -44,107 +46,142 @@ def token_stopword_filter(word: str):
     filtered_word = ' '.join([t for t in clean.lower().split() if t not in stopwords.words('english')])
     filtered_word = re.sub(r'\[[^)]*\]', '', filtered_word)
     filtered_word = re.sub(u"[^\w\d'\s\-]+", '', filtered_word)
-
     return filtered_word
 
 
-
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def index():
-    return flask.render_template("main.html")
+    if request.method == 'GET':
+        return flask.render_template("main.html")
+    if request.method == 'POST':
+        text = request.form.get('search')
+        return redirect(url_for('search', search=text))
 
 
-@app.route('/search-result', methods=['POST'])
-def search():  # after pressing the search button
-    text = request.form['search']
-    id_list, title_list, journal_list, year_list, authors_list = search_elastic.dosearch(text)
-    method_popular_entities, dataset_popular_entities, upcoming_entities = search_elastic.popular_upcoming_entities(
-        id_list)
-    word_cloud = search_elastic.word_cloud_for_first_page(id_list, text)
-
-    method_popular_entities = method_popular_entities[:7]
-    dataset_popular_entities = dataset_popular_entities[:7]
-
-    count = (Counter([int(y) for y in year_list]))
-    count = sorted(count.items())
-    overview_count = []
-    overview_label = []
-    for x in count:
-        overview_count.append(x[1])
-        overview_label.append(str(x[0]))
-    return flask.render_template("search-result.html",
-                                 zipped_lists=zip(id_list, title_list, journal_list, year_list, authors_list),
-                                 search_text=text, word_cloud=word_cloud,
-                                 method_popular_entities=method_popular_entities,
-                                 dataset_popular_entities=dataset_popular_entities,
-                                 overview_count=overview_count, overview_label=overview_label)
+def get_ids(id_list=[], offset=0, per_page=10):
+    return id_list[offset: offset + per_page]
 
 
-@app.route('/search-result', methods=['GET'])
-def search_post():  # after pressing the search button
-    q = request.args.get('q')
-    if q:
-        search = True
-    try:
-        page = int(request.args.get('page', 1))
-    except ValueError:
-        page = 1
-    return flask.render_template("search-result.html")
+@app.route('/search-result', methods=['GET', 'POST'])
+def search():  
+    if request.method == 'GET':
+        page, per_page, offset = get_page_args(page_parameter='page',
+                                               per_page_parameter='per_page')
+        text = request.args['search']
+        id_list, title_list, journal_list, year_list, authors_list = search_elastic.dosearch(text)
+        method_popular_entities, dataset_popular_entities, upcoming_entities = search_elastic.popular_upcoming_entities(
+            id_list)
+        word_cloud = search_elastic.word_cloud_for_first_page(id_list, text)
+        method_popular_entities = method_popular_entities[:7]
+        dataset_popular_entities = dataset_popular_entities[:7]
+        zipped_lists = list(zip(id_list, title_list, journal_list, year_list, authors_list))
+        count = (Counter([int(y) for y in year_list]))
+        count = sorted(count.items())
+        overview_count = []
+        overview_label = []
+        for x in count:
+            overview_count.append(x[1])
+            overview_label.append(str(x[0]))
+
+        total = len(zipped_lists)
+        pagination_ids = get_ids(id_list=zipped_lists, offset=offset, per_page=per_page)
+        pagination = Pagination(page=page, per_page=per_page, total=total, css_framework='bootstrap4')
+        return flask.render_template("search-result.html",
+                                     zipped_lists=pagination_ids, total=total,
+                                     search_text=text, word_cloud=word_cloud,
+                                     method_popular_entities=method_popular_entities,
+                                     dataset_popular_entities=dataset_popular_entities,
+                                     overview_count=overview_count, overview_label=overview_label,
+                                     pagination=pagination, per_page=per_page, page=page)
+    if request.method == 'POST':
+        text = request.form.get('search')
+        return redirect(url_for('search', search=text))
 
 
 @app.route('/entities', methods=['GET', 'POST'])
-def entities():  # after pressing the search button
+def entities():
     if request.method == 'POST' and 'searchent' in request.form:
         entity = request.form['searchent']
         popular = search_elastic.wordcloud_entity(entity)
         id_list, title_list, journal_list, year_list, authors_list = search_elastic.dosearch_entity(entity)
         return flask.render_template("entities.html", entity_name=entity, popular=popular,
                                      zipped_lists=zip(id_list, title_list, journal_list, year_list, authors_list))
-
-
-@app.route('/author/<author_name>')
-def author(author_name):
-    authors_list_processed = []
-    id_list, title_list, journal_list, year_list, authors_list, wordcloud = search_elastic.search_by_author(author_name)
-    print(authors_list)
-    text_string = wordcloud
-    for aut in authors_list:
-        for aa in aut:
-            if aa not in authors_list_processed and aa != author_name:
-                authors_list_processed.append(aa)
-    return flask.render_template("author.html",
-                                 zipped_lists=zip(id_list, title_list, journal_list, year_list, authors_list),
-                                 author_name=author_name, number_of_pubs=len(id_list),
-                                 authors_list_processed=authors_list_processed, text_string=text_string)
+    if request.method == 'POST' and 'search' in request.form:
+        text = request.form.get('search')
+        return redirect(url_for('search', search=text))
 
 
 @app.route('/entities/dataset/<entity>', methods=['POST', 'GET'])
-def entities_dataset(entity):  # after pressing the search button
-    popular = search_elastic.wordcloud_entity(entity)
-    id_list, title_list, journal_list, year_list, authors_list = search_elastic.dosearch_entity(entity)
-    return flask.render_template("entities.html", entity_name=entity, popular=popular,
-                                 zipped_lists=zip(id_list, title_list, journal_list, year_list, authors_list))
+def entities_dataset(entity):
+    if request.method == 'GET':
+        popular = search_elastic.wordcloud_entity(entity)
+        id_list, title_list, journal_list, year_list, authors_list = search_elastic.dosearch_entity(entity)
+        return flask.render_template("entities.html", entity_name=entity, popular=popular,
+                                     zipped_lists=zip(id_list, title_list, journal_list, year_list, authors_list))
+    if request.method == 'POST' and 'searchent' in request.form:
+        entity = request.form['searchent']
+        popular = search_elastic.wordcloud_entity(entity)
+        id_list, title_list, journal_list, year_list, authors_list = search_elastic.dosearch_entity(entity)
+        return flask.render_template("entities.html", entity_name=entity, popular=popular,
+                                     zipped_lists=zip(id_list, title_list, journal_list, year_list, authors_list))
+    if request.method == 'POST' and 'search' in request.form:
+        text = request.form.get('search')
+        return redirect(url_for('search', search=text))
 
 
 @app.route('/entities/method/<entity>', methods=['POST', 'GET'])
-def entities_method(entity):  # after pressing the search button
-    popular = search_elastic.wordcloud_entity(entity)
-    id_list, title_list, journal_list, year_list, authors_list = search_elastic.dosearch_entity(entity)
-    return flask.render_template("entities.html", entity_name=entity, popular=popular,
-                                 zipped_lists=zip(id_list, title_list, journal_list, year_list, authors_list))
+def entities_method(entity):  
+    if request.method == 'GET':
+        popular = search_elastic.wordcloud_entity(entity)
+        id_list, title_list, journal_list, year_list, authors_list = search_elastic.dosearch_entity(entity)
+        return flask.render_template("entities.html", entity_name=entity, popular=popular,
+                                     zipped_lists=zip(id_list, title_list, journal_list, year_list, authors_list))
+    if request.method == 'POST' and 'searchent' in request.form:
+        entity = request.form['searchent']
+        popular = search_elastic.wordcloud_entity(entity)
+        id_list, title_list, journal_list, year_list, authors_list = search_elastic.dosearch_entity(entity)
+        return flask.render_template("entities.html", entity_name=entity, popular=popular,
+                                     zipped_lists=zip(id_list, title_list, journal_list, year_list, authors_list))
+    if request.method == 'POST' and 'search' in request.form:
+        text = request.form.get('search')
+        return redirect(url_for('search', search=text))
+
+
+
+@app.route('/author/<author_name>', methods=['GET', 'POST'])
+def author(author_name):
+    if request.method == 'GET':
+        authors_list_processed = []
+        id_list, title_list, journal_list, year_list, authors_list, wordcloud = search_elastic.search_by_author(author_name)
+        text_string = wordcloud
+        for aut in authors_list:
+            for aa in aut:
+                if aa not in authors_list_processed and aa != author_name:
+                    authors_list_processed.append(aa)
+        return flask.render_template("author.html",
+                                     zipped_lists=zip(id_list, title_list, journal_list, year_list, authors_list),
+                                     author_name=author_name, number_of_pubs=len(id_list),
+                                     authors_list_processed=authors_list_processed, text_string=text_string)
+    if request.method == 'POST':
+        text = request.form.get('search')
+        return redirect(url_for('search', search=text))
 
 
 @app.route('/publication/<publication_id>', methods=['POST', 'GET'])
 def publication(publication_id):
-    id_list, title_list, journal_list, year_list, authors_list, abstract_list, method_entities, dataset_entities, \
+    if request.method == 'GET':
+        id_list, title_list, journal_list, year_list, authors_list, abstract_list, method_entities, dataset_entities, \
         amb_entities = search_elastic.search_by_id(publication_id)
-    arxiv_id = publication_id.split('_')[1]
-    abstract_list = ' '.join(abstract_list)
-    paper_url = "https://arxiv.org/pdf/" + arxiv_id + ".pdf"
-    return flask.render_template("publication.html",
-                                 zipped_lists=zip(id_list, title_list, journal_list, year_list, authors_list),
-                                 abstract=abstract_list, method=method_entities, dataset=dataset_entities,
-                                 url=paper_url)
+        arxiv_id = publication_id.split('_')[1]
+        abstract_list = ' '.join(abstract_list)
+        paper_url = "https://arxiv.org/pdf/" + arxiv_id + ".pdf"
+        return flask.render_template("publication.html",
+                                     zipped_lists=zip(id_list, title_list, journal_list, year_list, authors_list),
+                                     abstract=abstract_list, method=method_entities, dataset=dataset_entities,
+                                     url=paper_url)
+    if request.method == 'POST':
+        text = request.form.get('search')
+        return redirect(url_for('search', search=text))
 
 
 @app.route('/entity_search', methods=['GET', 'POST'])
@@ -201,184 +238,32 @@ def logout():
     return redirect(url_for('login', _external=True))
 
 
-# from app import app
-# import flask
-# import datetime
-# import time
-# import dash
-
-# import pandas as pd
-# import dash_html_components as html
-# import dash_core_components as dcc
-# import plotly.graph_objs as go
-# import plotly.figure_factory as ff
-
-# from flask import request, redirect, url_for
-# from app.modules import search_elastic
-# from collections import Counter
-# from elasticsearch import Elasticsearch
-
-# es = Elasticsearch(
-#     [{'host': 'localhost', 'port': 9200}], timeout=30, max_retries=10, retry_on_timeout=True
-# )
-
-
-# @app.route('/')
-# @app.route('/')
-# def index():
-#     return flask.render_template("main.html")
-
-
-# @app.route('/search-result', methods=['POST'])
-# def search():  # after pressing the search button
-#     start = time.time()
-#     text = request.form['search']
-#     id_list, title_list, journal_list, year_list, authors_list = search_elastic.dosearch(text)
-#     method_popular_entities, dataset_popular_entities, upcoming_entities = search_elastic.popular_upcoming_entities(
-#         id_list)
-#     word_cloud = search_elastic.word_cloud_for_first_page(id_list, text)
-
-#     method_popular_entities = method_popular_entities[:7]
-#     dataset_popular_entities = dataset_popular_entities[:7]
-
-#     count = (Counter([int(y) for y in year_list]))
-#     count = sorted(count.items())
-#     overview_count = []
-#     overview_label = []
-#     for x in count:
-#         overview_count.append(x[1])
-#         overview_label.append(str(x[0]))
-#     print(time.time() - start)
-#     return flask.render_template("search-result.html",
-#                                  zipped_lists=zip(id_list, title_list, journal_list, year_list, authors_list),
-#                                  search_text=text, word_cloud=word_cloud,
-#                                  method_popular_entities=method_popular_entities,
-#                                  dataset_popular_entities=dataset_popular_entities,
-#                                  overview_count=overview_count, overview_label=overview_label)
-
-
-# @app.route('/search-result', methods=['GET'])
-# def search_post():  # after pressing the search button
-#     q = request.args.get('q')
-#     if q:
-#         search = True
-#     try:
-#         page = int(request.args.get('page', 1))
-#     except ValueError:
-#         page = 1
-
-#     return flask.render_template("search-result.html")
-
-
-# @app.route('/entities', methods=['GET', 'POST'])
-# def entities():  # after pressing the search button
-#     entity = request.form['searchent']
-#     popular = search_elastic.wordcloud_entity(entity)
-#     id_list, title_list, journal_list, year_list, authors_list = search_elastic.dosearch_entity(entity)
-#     return flask.render_template("entities.html", entity_name=entity, popular=popular,
-#                                  zipped_lists=zip(id_list, title_list, journal_list, year_list, authors_list))
-
-
-# @app.route('/publication/<publication_id>', methods=['POST', 'GET'])
-# def publication(publication_id):
-#     if request.method == 'POST':
-#         text = request.form['search']
-#         id_list, title_list, journal_list, year_list, authors_list, method_entities, dataset_entities, amb_entities = \
-#             search_elastic.search_by_id(text)
-#         return flask.render_template("search.html",
-#                                      zipped_lists=zip(id_list, title_list, journal_list, year_list), title=title_list,
-#                                      journal=journal_list, year=year_list, authors=authors_list)
-
-#     else:
-#         id_list, title_list, journal_list, year_list, authors_list, abstract_list, method_entities, dataset_entities, \
-#         amb_entities = search_elastic.search_by_id(publication_id)
-#         arxiv_id = publication_id.split('_')[1]
-#         abstract_list = ' '.join(abstract_list)
-#         paper_url = "https://arxiv.org/pdf/" + arxiv_id + ".pdf"
-#         return flask.render_template("publication.html",
-#                                      zipped_lists=zip(id_list, title_list, journal_list, year_list, authors_list),
-#                                      abstract=abstract_list, method=method_entities, dataset=dataset_entities,
-#                                      url=paper_url)
-
-
-# @app.route('/author/<author_name>')
-# def author(author_name):
-#     authors_list_processed = []
-#     id_list, title_list, journal_list, year_list, authors_list, wordcloud = search_elastic.search_by_author(author_name)
-#     print(authors_list)
-#     text_string = wordcloud
-#     for aut in authors_list:
-#         for aa in aut:
-#             if aa not in authors_list_processed and aa != author_name:
-#                 authors_list_processed.append(aa)
-
-#     return flask.render_template("author.html",
-#                                  zipped_lists=zip(id_list, title_list, journal_list, year_list, authors_list),
-#                                  author_name=author_name, number_of_pubs=len(id_list),
-#                                  authors_list_processed=authors_list_processed, text_string=text_string)
-
-
-# @app.route('/entities/dataset/<entity>', methods=['POST', 'GET'])
-# def entities_dataset(entity):  # after pressing the search button
-#     popular = search_elastic.wordcloud_entity(entity)
-#     id_list, title_list, journal_list, year_list, authors_list = search_elastic.dosearch_entity(entity)
-#     return flask.render_template("entities.html", entity_name=entity, popular=popular,
-#                                  zipped_lists=zip(id_list, title_list, journal_list, year_list, authors_list))
-
-
-# @app.route('/entities/method/<entity>', methods=['POST', 'GET'])
-# def entities_method(entity):  # after pressing the search button
-#     popular = search_elastic.wordcloud_entity(entity)
-#     id_list, title_list, journal_list, year_list, authors_list = search_elastic.dosearch_entity(entity)
-#     return flask.render_template("entities.html", entity_name=entity, popular=popular,
-#                                  zipped_lists=zip(id_list, title_list, journal_list, year_list, authors_list))
-
-
-# @app.route('/author/search', methods=['POST', 'GET'])
-# def search_inpub_authors():  # after pressing the search button
-#     text = request.form['search']
-#     id_list, title_list, journal_list, year_list, authors_list = search_elastic.dosearch(text)
-
-#     return flask.render_template("search.html",
-#                                  zipped_lists=zip(id_list, title_list, journal_list, year_list, authors_list),
-#                                  search_text=text)
-
-
-# @app.route('/publication/search', methods=['POST', 'GET'])
-# def search_inpub_publications():  # after pressing the search button
-#     text = request.form['search']
-#     id_list, title_list, journal_list, year_list, authors_list = search_elastic.dosearch(text)
-#     return flask.render_template("search.html",
-#                                  zipped_lists=zip(id_list, title_list, journal_list, year_list, authors_list),
-#                                  search_text=text)
-
-
 @app.route('/my/data/<entity>')
 def get_d3_data(entity):
-    df = search_elastic.search_by_entity(entity)  # Constructed however you need it
+    df = search_elastic.search_by_entity(entity)
     return df.to_csv()
 
 
 @app.route('/my/updatedata/<entity>')
 def get_d3_updatedata(entity):
-    df = search_elastic.filter_by_conf(entity)  # Constructed however you need it
+    df = search_elastic.filter_by_conf(entity)
     return df.to_csv()
 
 
 @app.route('/my/piedata/<entity>')
 def get_d3_piedata(entity):
-    df = search_elastic.filter_by_pie(entity)  # Constructed however you need it
+    df = search_elastic.filter_by_pie(entity)  
     return df.to_csv()
 
 
 @app.route('/crowdsourcing/<entity>', methods=['GET'])
-def crowdsourcing(entity):  # after pressing the search button
+def crowdsourcing(entity):  
     sentences = search_elastic.select_sentence(entity)
     return flask.render_template("crowdsourcing.html", sentences=sentences, entity=entity)
 
 
 @app.route('/crowdsourcing', methods=['GET', 'POST'])
-def crowdsourcing_ambigious():  # after pressing the search button
+def crowdsourcing_ambigious():
     entity = search_elastic.entities_for_crowdsourcing()
 
     if request.method == 'GET':
@@ -396,7 +281,6 @@ def crowdsourcing_ambigious():  # after pressing the search button
 @app.route('/annotations', methods=['GET', 'POST'])
 def annotation_ambigious():  # after pressing the search button
     sentences, post_id = search_elastic.select_reddit_post()
-
     if request.method == 'GET':
         return flask.render_template("annotations.html", sentences=sentences)
     if request.method == 'POST':

@@ -153,7 +153,7 @@ def dosearch(_string):
             }
         }
     }
-    _search = es.search(index=publications_index, doc_type="publications", body=_query_all, size=25)
+    _search = es.search(index=publications_index, doc_type="publications", body=_query_all, size=250)
 
     context = {}
     list1 = []

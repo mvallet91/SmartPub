@@ -59,7 +59,7 @@
                     <li><a href="/dashapp/" style="color:skyblue">Stats</a></li>
                 </ul>
                 <div class="col-lg-8 col-sm-3">
-                    <form class="page-search-form" role="search" action='/search-result' method="post">
+                    <form class="page-search-form" role="search" action='' method="post">
                         <div class="input-search input-search-dark" style="top: 20px;" align="center" >
                             <input type="text" class="form-control" name="search" placeholder="Search..." size="30">
                             <input type="submit"/>
@@ -67,25 +67,6 @@
                     </form>
                 </div>
             </div>
-            <!-- Navbar Collapse -->
-            <!--<div class="col-md-1">-->
-                <!--<a href="/" style="color:skyblue; font-weight:bold">Home</a>-->
-            <!--</div>-->
-            <!--<div class="collapse navbar-collapse navbar-collapse-toolbar" id="site-navbar-collapse">-->
-                <!--<form class="page-search-form" role="search" action='/search-result' method="post">-->
-                    <!--<div class="input-search input-search-dark" style="top: 20px;" align="center" >-->
-                        <!--<input type="text" class="form-control" name="search" placeholder="Search..." size="30">-->
-                        <!--<input type="submit" />-->
-                    <!--</div>-->
-                <!--</form>-->
-            <!--&lt;!&ndash; Navbar Toolbar &ndash;&gt;-->
-            <!--&lt;!&ndash; End Navbar Toolbar &ndash;&gt;-->
-            <!--&lt;!&ndash; Navbar Toolbar Right &ndash;&gt;-->
-            <!--&lt;!&ndash; End Navbar Toolbar Right &ndash;&gt;-->
-            <!--</div>-->
-            <!-- End Navbar Collapse -->
-            <!-- Site Navbar Seach -->
-            <!-- End Site Navbar Seach -->
         </div>
     </nav>
 
@@ -128,135 +109,51 @@
                     <!-- End Page Widget -->
                 </div>
                 <div class="col-md-7">
-                    <!-- Panel -->
                     <div class="panel">
                         <div class="panel-body">
-
-                            <h1 class="page-search-title">Search Results For {{search_text}}</h1>
+                            <h1 class="page-search-title">Search results for {{search_text}}</h1>
                             <p class="page-search-count">About
-                                <span>15</span> result (
-                                <span>0.35</span> seconds)</p>
+                                <span>{{total}}</span> results (
+                                <span>5.35</span> seconds)</p>
                             <ul class="list-group list-group-full list-group-dividered">
-                                {% for id, title,journal,year,authors in zipped_lists %}
-                                <li class="list-group-item">
-                                    <h4><a class="search-result-link" href="/publication/{{ id }}">{{ title }}</a></h4>
-                                    <!--<table>-->
-                                    <!--<tr>-->
-                                    {% for author in authors %}
-                                    <span style="display: inline-block"><a class="search-result-link" href="/author/{{author}}"> {{author}} &nbsp</a></span>
-
-                                    <!--<td><a class="search-result-link" href="http://127.0.0.1:5000/author/{{author}}"> {{author}}, &nbsp</a> </td>-->
-
-
-                                    {% endfor %}
-                                    <!--</tr></table>-->
-                                    <!--<a class="search-result-link" href="http://127.0.0.1:5000/publication/{{ id }}">{{ authors }}</a>-->
-                                    <small style="display: block">{{ journal}}, &nbsp {{ year}} </small>
-
-                                    {% endfor %}
-
-                                    <!--{% for list1item in title %}-->
-                                    <!--{% for list2item in journal %}-->
-
-                                    <!--{% for list3item in year %}-->
-
-                                    <!--<li class="list-group-item">-->
-                                    <!--<h4><a href="https://github.com/amazingSurge?tab=repositories">{{ list1item }}</a></h4>-->
-                                    <!--<a class="search-result-link" href="https://github.com/amazingSurge?tab=repositories">{{ list2item }}</a>-->
-                                    <!--<p>{{ list3item}} </p>-->
-
-
-                                    <!--{% endfor %}-->
-
-                                    <!--{% endfor %}-->
-                                    <!--{% endfor %}-->
+                                {% for id, title, journal, year, authors in zipped_lists %}
+                                    <li class="list-group-item">
+                                        <h4><a class="search-result-link" href="/publication/{{ id }}">{{ title }}</a></h4>
+                                        {% for author in authors %}
+                                            <span style="display: inline-block"><a class="search-result-link" href="/author/{{author}}"> {{author}} &nbsp</a></span>
+                                        {% endfor %}
+                                        <small style="display: block">{{journal}}, &nbsp {{year}} </small>
+                                {% endfor %}
                                 </li>
-                                <!--<li class="list-group-item">-->
-                                <!--<h4><a href="https://github.com/amazingSurge?tab=repositories">Parum Interiret Consequatur</a></h4>-->
-                                <!--<a class="search-result-link" href="https://github.com/amazingSurge?tab=repositories">https://github.com/amazingSurge?tab=repositories</a>-->
-                                <!--<p>Regula magnosque ait. Rebus intellegimus occulte instituendarum quoniam-->
-                                <!--fabulae.Regula magnosque ait. Rebus intellegimus occulte instituendarum-->
-                                <!--quoniam fabulae.</p>-->
-                                <!--</li>-->
-                                <!--<li class="list-group-item">-->
-                                <!--<h4><a href="https://github.com/amazingSurge?tab=repositories">Afficitur Nos Veritus</a></h4>-->
-                                <!--<a class="search-result-link" href="https://github.com/amazingSurge?tab=repositories">https://github.com/amazingSurge?tab=repositories</a>-->
-                                <!--<p>Elaboraret animum primo. Civibus assueverit consequatur affert viros-->
-                                <!--scribi.Elaboraret animum primo. Civibus assueverit consequatur-->
-                                <!--affert viros scribi.</p>-->
-                                <!--</li>-->
-                                <!--<li class="list-group-item">-->
-                                <!--<h4><a href="https://github.com/amazingSurge?tab=repositories">Tamquam Secumque Nacti</a></h4>-->
-                                <!--<a class="search-result-link" href="https://github.com/amazingSurge?tab=repositories">https://github.com/amazingSurge?tab=repositories</a>-->
-                                <!--<p>Pronuntiaret liberos probes horribiles acri ita seiunctum aristippus.-->
-                                <!--Humili.Pronuntiaret liberos probes horribiles acri ita seiunctum-->
-                                <!--aristippus. Humili.Pronuntiaret liberos probes horribiles acri-->
-                                <!--ita seiunctum aristippus. Humili.</p>-->
-                                <!--</li>-->
-                                <!--<li class="list-group-item">-->
-                                <!--<h4><a href="https://github.com/amazingSurge?tab=repositories">Aliquo Difficile In</a></h4>-->
-                                <!--<a class="search-result-link" href="https://github.com/amazingSurge?tab=repositories">https://github.com/amazingSurge?tab=repositories</a>-->
-                                <!--<p>Omnes arbitrer ancillae fictae maximam renovata, fieri pecuniae mundus.Omnes-->
-                                <!--arbitrer ancillae fictae maximam renovata, fieri pecuniae mundus.</p>-->
-                                <!--</li>-->
-                                <!--<li class="list-group-item">-->
-                                <!--<h4><a href="https://github.com/amazingSurge?tab=repositories">Quale Momenti Eitam</a></h4>-->
-                                <!--<a class="search-result-link" href="https://github.com/amazingSurge?tab=repositories">https://github.com/amazingSurge?tab=repositories</a>-->
-                                <!--<p>Perpetiuntur inportuno iudicio errem. Reperire aliud delectus referta-->
-                                <!--fruuntur.Perpetiuntur inportuno iudicio errem. Reperire aliud delectus-->
-                                <!--referta fruuntur.</p>-->
-                                <!--</li>-->
-                                <!--</ul>-->
-                                <!--<nav>-->
-                                <!--<ul class="pagination pagination-no-border">-->
-                                <!--<li class="disabled">-->
-                                <!--<a href="javascript:void(0)" aria-label="Previous">-->
-                                <!--<span aria-hidden="true">&laquo;</span>-->
-                                <!--</a>-->
-                                <!--</li>-->
-                                <!--<li class="active"><a href="javascript:void(0)">1 <span class="sr-only">(current)</span></a></li>-->
-                                <!--<li><a href="javascript:void(0)">2</a></li>-->
-                                <!--<li><a href="javascript:void(0)">3</a></li>-->
-                                <!--<li><a href="javascript:void(0)">4</a></li>-->
-                                <!--<li><a href="javascript:void(0)">5</a></li>-->
-                                <!--<li>-->
-                                <!--<a href="javascript:void(0)" aria-label="Next">-->
-                                <!--<span aria-hidden="true">&raquo;</span>-->
-                                <!--</a>-->
-                                <!--</li>-->
                             </ul>
-                            </nav>
+                            {{ pagination.links }}
                         </div>
                     </div>
-                    <!-- End Panel -->
                 </div>
                 <div class="col-md-3">
-                    <!-- Page Widget -->
                     <div class="panel">
                         <div class="panel-body" style="padding-right: 5px; padding-left: 5px;">
                             <div class="widget-header-content">
                                 <h3 align="center" style="margin-top: 0px;">General Overview</h3>
-                                <hr />
+                                <hr/>
                                 <canvas id="lineChart4" ></canvas>
-                                <hr />
+                                <hr/>
                                 <h4 align="center" style="margin-top: 0px;">Popular Dataset Entities</h4>
-                                 {% for datent in dataset_popular_entities %}
-                          <li class="list-group-item">
-                          <h5><a href="/entities/dataset/{{datent[0]}}">{{datent[0]}}</a></h5>
-                                </li>
+                                {% for datent in dataset_popular_entities %}
+                                    <li class="list-group-item">
+                                        <h5><a href="/entities/dataset/{{datent[0]}}">{{datent[0]}}</a></h5>
+                                    </li>
                                 {% endfor %}
-                                <hr />
+                                <hr/>
                                 <h4 align="center" style="margin-top: 0px;">Popular Method Entities</h4>
-                                 {% for metent in method_popular_entities %}
-                          <li class="list-group-item">
-                          <h5><a href="/entities/method/{{metent[0]}}">{{metent[0]}}</a></h5>
-                          </li>
+                                {% for metent in method_popular_entities %}
+                                    <li class="list-group-item">
+                                        <h5><a href="/entities/method/{{metent[0]}}">{{metent[0]}}</a></h5>
+                                    </li>
                                 {% endfor %}
                             </div>
-
                         </div>
                     </div>
-                    <!-- End Page Widget -->
                 </div>
             </div>
         </div>
@@ -267,9 +164,6 @@
     <!-- Footer -->
     <footer class="site-footer">
         <span class="site-footer-legal">© 2018 <a href="https://github.com/mvallet91/SmartPub-TSENER">SmartPub</a></span>
-        <!--<div class="site-footer-right">-->
-        <!--Crafted with <i class="red-600 wb wb-heart"></i> by <a href="http://themeforest.net/user/amazingSurge">amazingSurge</a>-->
-        <!--</div>-->
     </footer>
     <!-- Core  -->
     <script src="/static/vendor/jquery/jquery.js"></script>
