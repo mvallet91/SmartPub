@@ -226,6 +226,8 @@ def popular_upcoming_entities(paper_id_list):
         _query_terms = es.search(index=entities_index, doc_type="entities", body=_query_terms)
         for hit in _query_terms['hits']['hits']:
             entity = hit['_source']['clean']
+            if hit['_source']['annotator'] in ['noise', 'other', 'software']:
+                continue
             entity_words = entity.split()
             if len(entity_words) == 1 and not wordnet.synsets(entity.lower()) and entity.lower() not in stopword_list:
                 terms_in_results.append(entity)

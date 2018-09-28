@@ -3,117 +3,97 @@
 <html class="no-js css-menubar" lang="en">
 <head>
     <style>
-body {
-  font: 10px sans-serif;
-}
-.chart {
-  background: #fff;
-}
-p {
-  font: 12px helvetica;
-}
-.axis path, .axis line {
-  fill: none;
-  stroke: #000;
-  stroke-width: 2px;
-  shape-rendering: crispEdges;
-}
-button {
-  position: absolute;
-  right: 50px;
-  top: 10px;
-}
-</style>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
-  <meta name="description" content="Entity Information">
-  <meta name="author" content="Web Information Systems - TU Delft">
+        body {
+          font: 10px sans-serif;
+        }
+        .chart {
+          background: #fff;
+        }
+        p {
+          font: 12px helvetica;
+        }
+        .axis path, .axis line {
+          fill: none;
+          stroke: #000;
+          stroke-width: 2px;
+          shape-rendering: crispEdges;
+        }
+        button {
+          position: absolute;
+          right: 50px;
+          top: 10px;
+        }
+    </style>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+    <meta name="description" content="Entity Information">
+    <meta name="author" content="Web Information Systems - TU Delft">
+    <title>Entity | SmartPub</title>
 
-  <title>Entity | SmartPub</title>
+    <script src="/static/pace/pace.js"></script>
+    <link href="/static/pace/themes/blue/pace-theme-center-radar.css" rel="stylesheet" />
+    
+    <link rel="apple-touch-icon" href="/static/images/apple-touch-icon.png">
+    <link rel="shortcut icon" href="/static/images/favicon.ico">
 
-  <link rel="apple-touch-icon" href="/static/images/apple-touch-icon.png">
-  <link rel="shortcut icon" href="/static/images/favicon.ico">
-
-  <!-- Stylesheets -->
-  <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
     <link rel="stylesheet" href="/static/css/bootstrap-multiselect.css">
 
-  <link rel="stylesheet" href="/static/css/bootstrap-extend.min.css">
-  <link rel="stylesheet" href="/static/css/site.min.css">
+    <link rel="stylesheet" href="/static/css/bootstrap-extend.min.css">
+    <link rel="stylesheet" href="/static/css/site.min.css">
 
-  <!-- Plugins -->
-  <link rel="stylesheet" href="/static/vendor/animsition/animsition.css">
-  <link rel="stylesheet" href="/static/vendor/asscrollable/asScrollable.css">
-  <link rel="stylesheet" href="/static/vendor/switchery/switchery.css">
-  <link rel="stylesheet" href="/static/vendor/intro-js/introjs.css">
-  <link rel="stylesheet" href="/static/vendor/slidepanel/slidePanel.css">
-  <link rel="stylesheet" href="/static/vendor/flag-icon-css/flag-icon.css">
+    <!-- Plugins -->
+    <link rel="stylesheet" href="/static/vendor/animsition/animsition.css">
+    <link rel="stylesheet" href="/static/vendor/asscrollable/asScrollable.css">
+    <link rel="stylesheet" href="/static/vendor/switchery/switchery.css">
+    <link rel="stylesheet" href="/static/vendor/intro-js/introjs.css">
+    <link rel="stylesheet" href="/static/vendor/slidepanel/slidePanel.css">
+    <link rel="stylesheet" href="/static/vendor/flag-icon-css/flag-icon.css">
 
-  <!-- Fonts -->
-  <link rel="stylesheet" href="/static/fonts/web-icons/web-icons.min.css">
-  <link rel="stylesheet" href="/static/fonts/brand-icons/brand-icons.min.css">
-  <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,300italic'>
-  <!-- Inline -->
-  <link rel="stylesheet" href="/static/examples/css/pages/profile.css">
+    <!-- Fonts -->
+    <link rel="stylesheet" href="/static/fonts/web-icons/web-icons.min.css">
+    <link rel="stylesheet" href="/static/fonts/brand-icons/brand-icons.min.css">
+    <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,300italic'>
+    <!-- Inline -->
+    <link rel="stylesheet" href="/static/examples/css/pages/profile.css">
 
-  <!-- Scripts -->
-  <script src="/static/vendor/modernizr/modernizr.js"></script>
-  <script src="/static/vendor/breakpoints/breakpoints.js"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <!-- Scripts -->
+    <script src="/static/vendor/modernizr/modernizr.js"></script>
+    <script src="/static/vendor/breakpoints/breakpoints.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="/static/js/apps/main.js"></script>
-  <script>
-    Breakpoints();
-  </script>
+    <script>
+        Breakpoints();
+    </script>
 </head>
+    
 <body class="page-profile">
     <nav class="site-navbar navbar navbar-default navbar-fixed-top navbar-mega" role="navigation">
         <div class="navbar-container container-fluid">
-                <div class="navbar-header"><!-- -->
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#collapse">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="glyphicon glyphicon-arrow-down">Menu</span>
-                    </button>
-                </div>
-                <div class="collapse navbar-collapse" id="collapse">
-                    <ul class="nav navbar-nav">
-                        <li><a href="/" style="color:skyblue">Home</a></li>
-                        <li><a href="https://github.com/mvallet91/SmartPub-TSENER" style="color:skyblue">About</a></li>
-                        <li><a href="/entities/method/named%20entity%20recognition" style="color:skyblue">Entities</a></li>
-                        <li><a href="/dashapp/" style="color:skyblue">Stats</a></li>
-                    </ul>
-                        <div class="col-lg-8 col-sm-3" align="center">
-                            <form class="page-search-form" role="search" action='' method="post">
-                                <div class="input-search input-search-dark" style="top: 20px;" align="center" >
-                                    <input type="text" class="form-control" name="search" placeholder="Search..." size="30">
-                                    <input type="submit" />
-                                </div>
-                            </form>
+            <div class="navbar-header"><!-- -->
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="glyphicon glyphicon-arrow-down">Menu</span>
+                </button>
+            </div>
+            <div class="collapse navbar-collapse" id="collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="/" style="color:skyblue">Home</a></li>
+                    <li><a href="https://github.com/mvallet91/SmartPub-TSENER" style="color:skyblue">About</a></li>
+                    <li><a href="/entities/method/named%20entity%20recognition" style="color:skyblue">Entities</a></li>
+                    <li><a href="/dashapp/" style="color:skyblue">Stats</a></li>
+                </ul>
+                <div class="col-lg-8 col-sm-3" align="center">
+                    <form class="page-search-form" role="search" action='' method="post">
+                        <div class="input-search input-search-dark" style="top: 20px;" align="center" >
+                            <input type="text" class="form-control" name="search" placeholder="Search..." size="30">
+                            <input type="submit" />
                         </div>
+                    </form>
                 </div>
-            <!-- Navbar Collapse -->
-            <!--<div class="col-md-1">-->
-                <!--<a href="/" style="color:skyblue; font-weight:bold">Home</a>-->
-            <!--</div>-->
-            <!--<div class="collapse navbar-collapse navbar-collapse-toolbar" id="site-navbar-collapse">-->
-                <!--<form class="page-search-form" role="search" action='/search-result' method="post">-->
-                    <!--<div class="input-search input-search-dark" style="top: 20px;" align="center" >-->
-                        <!--<input type="text" class="form-control" name="search" placeholder="Search..." size="30">-->
-                        <!--<input type="submit" />-->
-                    <!--</div>-->
-                <!--</form>-->
-            <!--&lt;!&ndash; Navbar Toolbar &ndash;&gt;-->
-
-            <!--&lt;!&ndash; End Navbar Toolbar &ndash;&gt;-->
-
-            <!--&lt;!&ndash; Navbar Toolbar Right &ndash;&gt;-->
-
-            <!--&lt;!&ndash; End Navbar Toolbar Right &ndash;&gt;-->
-            <!--</div>-->
-            <!-- End Navbar Collapse -->
-
-            <!-- Site Navbar Seach -->
-            <!-- End Site Navbar Seach -->
+            </div>
         </div>
     </nav>
     <!-- Page -->
@@ -197,26 +177,6 @@ button {
                                         </li>
                                     </ul>
                                 </div>
-                            <!--<div class="tab-pane animation-slide-left" id="messages" role="tabpanel">
-                                    <ul class="list-group">
-                                        {% for author in authors_list_processed %}
-                                        <li class="list-group-item">
-                                            <div class="media">
-                                                <div class="media-left">
-                                                    <a class="avatar" href="javascript:void(0)">
-                                                        <img class="img-responsive" src="/static/portraits/default.png" alt="...">
-                                                    </a>
-                                                </div>
-                                                <div class="media-body">
-                                                    <h4 class="media-heading">
-                                                        <a class="search-result-link" href="/author/{{author}}">{{author}}</a>
-                                                    </h4>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        {% endfor %}
-                                    </ul>
-                                </div>-->
                             </div>
                         </div>
                     </div>
