@@ -24,6 +24,8 @@ x = 0
 for rr in entities:
     if not 'word' in rr:
         continue
+    if 'clean' in rr:
+        continue
     word = rr['word'].lower()
     no_punkt = word.translate(tr)
     clean = ''.join([i for i in no_punkt if not i.isdigit()])
@@ -48,6 +50,8 @@ annotation = {}
 for rr in entities:
     if rr['Annotator'] != 'undefined':
         annotation[rr['clean']] = rr['Annotator']
+    if rr['Annotator_godmode'] != 'undefined':
+        annotation[rr['clean']] = rr['Annotator_godmode']
         
 pub_entities = pub_db.entities.find()        
 for rr in pub_entities:
@@ -61,6 +65,8 @@ entities = db.entities.find()
 x = 0
 y = 0
 for rr in entities:
+    if rr['Annotator'] != 'undefined':
+        continue
     try:
         new_annotation = annotation[rr['clean']]
         db.entities.update_one({'_id': rr['_id']}, {"$set": {'Annotator': new_annotation}}, upsert=False)

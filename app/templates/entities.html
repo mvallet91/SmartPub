@@ -70,32 +70,33 @@
 </head>
     
 <body class="page-profile">
-    <nav class="site-navbar navbar navbar-default navbar-fixed-top navbar-mega" role="navigation">
-        <div class="navbar-container container-fluid">
-            <div class="navbar-header"><!-- -->
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="glyphicon glyphicon-arrow-down">Menu</span>
-                </button>
-            </div>
-            <div class="collapse navbar-collapse" id="collapse">
-                <ul class="nav navbar-nav">
-                    <li><a href="/" style="color:skyblue">Home</a></li>
-                    <li><a href="https://github.com/mvallet91/SmartPub-TSENER" style="color:skyblue">About</a></li>
-                    <li><a href="/entities/method/named%20entity%20recognition" style="color:skyblue">Entities</a></li>
-                    <li><a href="/dashapp/" style="color:skyblue">Stats</a></li>
-                </ul>
-                <div class="col-lg-8 col-sm-3" align="center">
-                    <form class="page-search-form" role="search" action='' method="post">
-                        <div class="input-search input-search-dark" style="top: 20px;" align="center" >
-                            <input type="text" class="form-control" name="search" placeholder="Search..." size="30">
-                            <input type="submit" />
-                        </div>
-                    </form>
-                </div>
+    
+<nav class="navbar navbar-inverse navbar-fixed-top navbar-mega">
+    <div class="navbar-container container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="glyphicon glyphicon-arrow-down">Menu</span>
+            </button>
+            <a class="navbar-brand" href="/">SmartPub</a>
+        </div>
+        <div class="collapse navbar-collapse" id="collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="/">Home</a></li>
+                <li><a href="/login"><span class="glyphicon glyphicon-log-in"></span>Login</a></li>
+                <li><a href="/entities/method/named%20entity%20recognition">Entities</a></li>
+                <li><a href="/dashapp/">Stats</a></li>
+            </ul>
+            <div class="col-lg-7 col-sm-3" align="center">
+                <form class="page-search-form" role="search" action='' method="post">
+                    <div class="input-search input-search-dark" style="top: 20px;" align="center" >
+                        <input type="text" class="form-control" name="search" placeholder="Search..." size="30">
+                    </div>
+                </form>
             </div>
         </div>
-    </nav>
+    </div>
+</nav>
     <!-- Page -->
     <div class="page animsition">
         <div class="page-content container-fluid" style="padding:30px 30px;">
@@ -189,12 +190,13 @@
 
 
   <!-- Footer -->
-  <footer class="site-footer">
-    <span class="site-footer-legal">© 2018 <a href="https://github.com/mvallet91/SmartPub-TSENER">SmartPub</a></span>
-    <!--<div class="site-footer-right">-->
-      <!--Crafted with <i class="red-600 wb wb-heart"></i> by <a href="http://themeforest.net/user/amazingSurge">amazingSurge</a>-->
-    <!--</div>-->
-  </footer>
+    <footer class="site-footer">
+        <span class="site-footer-legal">© 2018 About |
+            <a href="https://github.com/mvallet91/SmartPub">SmartPub Website</a> | 
+            <a href="https://github.com/mvallet91/SmartPub-TSENER">TSE-NER Research</a> |
+            <a href="http://www.wis.ewi.tudelft.nl/">TU Delft WIS</a>
+        </span>
+    </footer>
   <!-- Core  -->
 <script src="/static/vendor/jquery/jquery.js"></script>
   <script src="/static/vendor/bootstrap/bootstrap.js"></script>

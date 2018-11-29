@@ -1,0 +1,34 @@
+This is the SmartPub  API
+Call this api passing a list of arxiv ids and the facet name
+to get back its entities
+---
+tags:
+  - SmartPub API
+parameters:
+  - name: arxiv_id_list
+    in: path
+    type: string
+    required: true
+    description: list arxiv id of paper, in format arxiv.xxxx.xxx, arxiv.xxxx.xxx
+  - name: facet
+    in: query
+    type: string
+    description: type of entity requested
+responses:
+  500:
+    description: Error facet is incorrect
+  200:
+    description: Entities of articles
+    schema:
+      id: article
+      properties:
+        arxiv_id:
+          type: string
+          description: arxiv id of article
+          default: arxiv.xxx.xxxx
+        entities:
+          type: dict
+          description: Dictionary with list of entities
+          items:
+            type: lists
+          default: {'arxiv.xxxx.xxx' :["GAN", "SVM", "LSTM"]}

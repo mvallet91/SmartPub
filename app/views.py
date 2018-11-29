@@ -3,6 +3,7 @@ import flask
 import datetime
 import dash
 import re
+import logging
 import string
 
 import pandas as pd
@@ -19,10 +20,16 @@ from elasticsearch import Elasticsearch
 from nltk.corpus import stopwords
 from flask_paginate import Pagination, get_page_args
 
+from flasgger import Swagger, swag_from
+
+from app.modules import api_ner_tagger
 
 es = Elasticsearch(
     [{'host': 'localhost', 'port': 9200}], timeout=30, max_retries=10, retry_on_timeout=True
 )
+
+es_logger = logging.getLogger('elasticsearch')
+es_logger.setLevel(logging.CRITICAL)
 
 with open('/data2/SmartPub/app/secret_key.txt', 'r') as key:
     app.secret_key = key.readline()
@@ -52,7 +59,13 @@ def token_stopword_filter(word: str):
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'GET':
-        return flask.render_template("main.html")
+        try:
+            id_list, title_list, journal_list, year_list, authors_list = search_elastic.popular_papers()
+            return flask.render_template("main.html",
+                                         zipped_lists=zip(id_list, title_list, journal_list, year_list, authors_list))
+        except Exception:
+            return flask.render_template("test.html")
+        
     if request.method == 'POST':
         text = request.form.get('search')
         return redirect(url_for('search', search=text))
@@ -60,6 +73,14 @@ def index():
 
 def get_ids(id_list=[], offset=0, per_page=10):
     return id_list[offset: offset + per_page]
+
+
+@app.route('/autocomplete', methods=['GET'])
+def autocomplete():
+    search_text = request.args.get('q')
+    app.logger.debug(search_text)
+    results = search_elastic.autocomplete_query(search_text)
+    return flask.jsonify(matching_results=results)
 
 
 @app.route('/search-result', methods=['GET', 'POST'])
@@ -88,7 +109,7 @@ def search():
         pagination = Pagination(page=page, per_page=per_page, total=total, css_framework='bootstrap4')
         return flask.render_template("search-result.html",
                                      zipped_lists=pagination_ids, total=total,
-                                     search_text=text, word_cloud=word_cloud,
+                                     search_text=text, # word_cloud=word_cloud,
                                      method_popular_entities=method_popular_entities,
                                      dataset_popular_entities=dataset_popular_entities,
                                      overview_count=overview_count, overview_label=overview_label,
@@ -498,3 +519,84 @@ dashboard.layout = html.Div(children=[
         )
     )
 ])
+
+Swagger(app)
+
+
+@app.route('/api/<string:arxiv_id>/', methods=['GET'])
+@swag_from('api_index.yml')
+def api_index(arxiv_id):
+
+    arxiv_id = arxiv_id.lower().strip()
+    facet = request.args.get('facet')
+    facet = facet.lower()
+    id_list, title_list, journal_list, year_list, authors_list, abstract_list, \
+    method_entities, dataset_entities, all_amb = search_elastic.search_by_id(arxiv_id)
+    if facet not in ['both', 'dataset', 'method']:
+        return "An error occurred, invalid facet requested. Try 'dataset', 'method' or 'both'", 500
+    if facet == 'method':
+        entity_list = method_entities
+    if facet == 'dataset':
+        entity_list = dataset_entities
+    if facet == 'both':
+        entity_list = all_amb
+    return flask.jsonify(
+        arxiv_id=arxiv_id,
+        entities=entity_list
+    )
+
+
+@app.route('/api/entities_by_list/<string:arxiv_id_list>/', methods=['GET'])
+@swag_from('api_index_list.yml')
+def api_index_list(arxiv_id_list):
+
+    arxiv_id_list = [arxiv_id.lower().strip() for arxiv_id in arxiv_id_list.split(',')]
+    print(arxiv_id_list)
+    facet = request.args.get('facet')
+    facet = facet.lower()
+    final_list = {}
+    for arxiv_id in arxiv_id_list:
+        id_list, title_list, journal_list, year_list, authors_list, abstract_list, \
+        method_entities, dataset_entities, all_amb = search_elastic.search_by_id(arxiv_id)
+        if facet not in ['both', 'dataset', 'method']:
+            return "An error occurred, invalid facet requested. Try 'dataset', 'method' or 'both'", 500
+        if facet == 'method':
+            entity_list = method_entities
+        if facet == 'dataset':
+            entity_list = dataset_entities
+        if facet == 'both':
+            entity_list = all_amb
+        final_list[arxiv_id] = entity_list
+
+    return flask.jsonify(
+        arxiv_id=arxiv_id_list,
+        entities=final_list
+    )
+
+@app.route('/api/entities_in_text/<string:text_block>/', methods=['GET'])
+@swag_from('api_index_text.yml')
+def api_index_text(text_block):
+    facet = request.args.get('facet')
+    facet = facet.lower().strip()
+    print(len(text_block))
+
+    final_list = {}
+    if facet == 'both':
+        for facet in ['MET', 'DATA']:
+            entity_list = api_ner_tagger.tag_text_block(text_block, facet)
+            final_list[facet] = entity_list
+            print(entity_list)
+
+    elif facet == 'method':
+        facet = 'MET'
+        final_list[facet] = api_ner_tagger.tag_text_block(text_block, facet)
+
+    elif facet == 'dataset':
+        facet = 'DATA'
+        final_list[facet] = api_ner_tagger.tag_text_block(text_block, facet)
+
+    return flask.jsonify(
+        text=text_block,
+        entities=final_list
+    )
+

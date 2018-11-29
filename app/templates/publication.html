@@ -31,7 +31,7 @@
     <!-- Fonts -->
     <link rel="stylesheet" href="/static/fonts/web-icons/web-icons.min.css">
     <link rel="stylesheet" href="/static/fonts/brand-icons/brand-icons.min.css">
-    <link rel='stylesheet' href='http://fonts.googleapis.com/css?family=Roboto:300,400,500,300italic'>
+    <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,300italic'>
     <!-- Inline -->
     <link rel="stylesheet" href="/static/examples/css/pages/search-result.css">
 
@@ -43,74 +43,76 @@
     </script>
 </head>
 <body class="page-search">
-    <nav class="site-navbar navbar navbar-default navbar-fixed-top navbar-mega" role="navigation">
-        <div class="navbar-container container-fluid">
-            <div class="navbar-header"><!-- -->
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="glyphicon glyphicon-arrow-down">Menu</span>
-                </button>
-
-            </div>
-            <div class="collapse navbar-collapse" id="collapse">
-                <ul class="nav navbar-nav">
-                    <li><a href="/" style="color:skyblue">Home</a></li>
-                    <li><a href="https://github.com/mvallet91/SmartPub-TSENER" style="color:skyblue">About</a></li>
-                    <li><a href="/entities/method/named%20entity%20recognition" style="color:skyblue">Entities</a></li>
-                    <li><a href="/dashapp/" style="color:skyblue">Stats</a></li>
-                </ul>
-                <div class="col-lg-8 col-sm-3">
-                    <form class="page-search-form" role="search" action='' method="post">
-                        <div class="input-search input-search-dark" style="top: 20px;" align="center" >
-                            <input type="text" class="form-control" name="search" placeholder="Search..." size="30">
-                            <input type="submit" />
-                        </div>
-                    </form>
-                </div>
+<nav class="navbar navbar-inverse navbar-fixed-top navbar-mega">
+    <div class="navbar-container container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="glyphicon glyphicon-arrow-down">Menu</span>
+            </button>
+            <a class="navbar-brand" href="/">SmartPub</a>
+        </div>
+        <div class="collapse navbar-collapse" id="collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="/">Home</a></li>
+                <li><a href="/login"><span class="glyphicon glyphicon-log-in"></span>Login</a></li>
+                <li><a href="/entities/method/named%20entity%20recognition">Entities</a></li>
+                <li><a href="/dashapp/">Stats</a></li>
+            </ul>
+            <div class="col-lg-7 col-sm-3" align="center">
+                <form class="page-search-form" role="search" action='' method="post">
+                    <div class="input-search input-search-dark" style="top: 20px;" align="center" >
+                        <input type="text" class="form-control" name="search" placeholder="Search..." size="30">
+                    </div>
+                </form>
             </div>
         </div>
-    </nav>
+    </div>
+</nav>
 
 <!-- Page -->
 <div class="page animsition">
-    <div class="page-content container-fluid">
+    <div class="page container-fluid">
         <!-- Panel -->
-        <div class="panel">
-            <div class="panel-body nav-tabs-animate">
-                <ul class="nav nav-tabs nav-tabs-line" data-plugin="nav-tabs" role="tablist">
-                    {% for id, title, journal, year, authors in zipped_lists %}
-                    <h1>{{ title }}</h1>
-                    <!--<table>-->
-                    <!--<tr>-->
-                    {% for author in authors %}
-                    <span style="display: inline-block"><a class="search-result-link" href="/author/{{author}}"> {{author}} &nbsp</a></span>
-                    {% endfor %}
-                    <p>Published {{ year}} in {{ journal}}</p>
-                    {% endfor %}
-                    <li class="active"><a href="#Abstract">Abstract</a></li>
-                    <li><a href="#refref">References</a></li>
-                    <li><a href="#entities">Entities</a></li>
-                    <li><a href={{url}}>View Article</a></li>
-                </ul>
-                <div class="tab-content">
-                    <div id="Abstract" class="tab-pane fade in active">
-                        <p>{{ abstract }}</p>
-                    </div>
-                    <div id="refref" class="tab-pane fade">
-                        <p></p>
-                    </div>
-                    <div id="entities" class="tab-pane fade">
-                        <ul class="list-group">
-                            {% for ent in method %}
-                            <li class="list-group-item"><a class="search-result-link" href="/entities/method/{{ent}}">{{ent}}</a>
-                            </li>
-                            {% endfor %}
-                            {% for ent in dataset %}
-                            <li class="list-group-item"><a class="search-result-link" href="/entities/dataset/{{ent}}">{{ent}}</a>
-                            </li>
-                            {% endfor %}
-                        </ul>
-                        <p></p>
+        <div class="col-md-6 col-md-offset-3 col-sm-12 col-xs-12" >
+            <div class="panel">
+                <div class="panel-body nav-tabs-animate">
+                    <ul class="nav nav-tabs nav-tabs-line" data-plugin="nav-tabs" role="tablist">
+                        {% for id, title, journal, year, authors in zipped_lists %}
+                        <h1>{{ title }}</h1>
+                        <!--<table>-->
+                        <!--<tr>-->
+                        {% for author in authors %}
+                        <span style="display: inline-block"><a class="search-result-link" href="/author/{{author}}"> {{author}} &nbsp</a></span>
+                        {% endfor %}
+                        <p>Published {{ year}} in {{ journal}}</p>
+                        {% endfor %}
+                        <li class="active"><a href="#Abstract">Abstract</a></li>
+<!--                         <li><a href="#refref">References</a></li> -->
+                        <li><a href="#entities">Entities</a></li>
+                        <li><a href={{url}} target="_blank">View PDF</a></li>
+                        <li><a href=http://145.100.59.184:3000 target="_blank">View Annotated Article</a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <div id="Abstract" class="tab-pane fade in active">
+                            <p>{{ abstract }}</p>
+                        </div>
+                        <div id="refref" class="tab-pane fade">
+                            <p></p>
+                        </div>
+                        <div id="entities" class="tab-pane fade">
+                            <ul class="list-group">
+                                {% for ent in method %}
+                                <li class="list-group-item"><a class="search-result-link" href="/entities/method/{{ent}}">{{ent}}</a>
+                                </li>
+                                {% endfor %}
+                                {% for ent in dataset %}
+                                <li class="list-group-item"><a class="search-result-link" href="/entities/dataset/{{ent}}">{{ent}}</a>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                            <p></p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -118,14 +120,15 @@
     </div>
 </div>
 <!-- End Panel -->
-</div>
-</div>
 <!-- End Page -->
-
 
 <!-- Footer -->
 <footer class="site-footer">
-    <span class="site-footer-legal">© 2018 <a href="https://github.com/mvallet91/SmartPub-TSENER">SmartPub</a></span>
+    <span class="site-footer-legal">© 2018 About |
+        <a href="https://github.com/mvallet91/SmartPub">SmartPub Website</a> | 
+        <a href="https://github.com/mvallet91/SmartPub-TSENER">TSE-NER Research</a> |
+        <a href="http://www.wis.ewi.tudelft.nl/">TU Delft WIS</a>
+    </span>
 </footer>
 <!-- Core  -->
 <script src="/static/vendor/jquery/jquery.js"></script>

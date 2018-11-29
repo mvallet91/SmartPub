@@ -9,3 +9,8 @@ app/credentials.txt
 app/secret_key.txt
 /app/credentials.txt
 /app/secret_key.txt
+app/crf_trained_files/*
+app/embedding_models/*
+nohup.out
+smartpub_env/lib/python3.5/*
+

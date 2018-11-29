@@ -1,0 +1,34 @@
+This is the SmartPub  API
+Call this api passing a block of text and the facet name
+to get back its entities
+---
+tags:
+  - SmartPub API
+parameters:
+  - name: text_block
+    in: path
+    type: string
+    required: true
+    description: block of text
+  - name: facet
+    in: query
+    type: string
+    description: type of entity requested
+responses:
+  500:
+    description: Error facet is incorrect
+  200:
+    description: Entities of articles
+    schema:
+      id: text_block
+      properties:
+        text:
+          type: string
+          description: block of text to find entities
+          default: in this research we use imagenet
+        entities:
+          type: dict
+          description: Dictionary with list of entities
+          items:
+            type: lists
+          default: {'method' :["GAN", "SVM", "LSTM"]}

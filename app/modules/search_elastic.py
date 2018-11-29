@@ -51,155 +51,260 @@ def dosearch(_string):
     authors_list = []
     id_list = []
 
-    _query_author = {
-        'query': {
-            'match_phrase': {
-                'authors': _string
-            }
-        }
-    }
+#     _query_author = {
+#         'query': {
+#             'match_phrase': {
+#                 'authors': _string
+#             }
+#         }
+#     }
 
-    if tud_demo:
-        _query_author = {
-            "query": {
-                "bool": {
-                    "should": [
-                        {"match": {"authors": _string}},
-                        {"match": {"supervisors": _string}}
-                    ]
-                }
-            }
-        }
+#     if tud_demo:
+#         _query_author = {
+#             "query": {
+#                 "bool": {
+#                     "should": [
+#                         {"match": {"authors": _string}},
+#                         {"match": {"supervisors": _string}}
+#                     ]
+#                 }
+#             }
+#         }
 
-    _search_author = es.search(index=publications_index, doc_type="publications", body=_query_author, size=1000)
-    for doc in _search_author['hits']['hits']:
-        title_list.append(doc['_source']['title'])
-        if doc['_source']['journal'] == 'arxiv':
-            journal_list.append(doc['_source']['keywords'][0])
-        else:
-            journal_list.append(doc['_source']['journal'])
-        year_list.append(doc['_source']['year'])
-        id_list.append(doc['_id'])
+#     _search_author = es.search(index=publications_index, doc_type="publications", body=_query_author, size=1000)
+#     for doc in _search_author['hits']['hits']:
+#         title_list.append(doc['_source']['title'])
+#         if doc['_source']['journal'] == 'arxiv':
+#             journal_list.append(doc['_source']['keywords'][0])
+#         else:
+#             journal_list.append(doc['_source']['journal'])
+#         year_list.append(doc['_source']['year'])
+#         id_list.append(doc['_id'])
 
-        if tud_demo:
-            authors = doc['_source']['authors'] + doc['_source']['supervisors']
-            authors_list.append(authors)
-        else:
-            authors_list.append(doc['_source']['authors'])
+#         if tud_demo:
+#             authors = doc['_source']['authors'] + doc['_source']['supervisors']
+#             authors_list.append(authors)
+#         else:
+#             authors_list.append(doc['_source']['authors'])
 
-    _query_author = {"query": {
-        "query_string":
-            {
-                "query": _string
+#     _query_author = {"query": {
+#         "query_string":
+#             {
+#                 "query": _string
 
-            }
-        }
-    }
-    _search_author = es.search(index=publications_index, doc_type="publications", body=_query_author, size=100)
-    for doc in _search_author['hits']['hits']:
-        if tud_demo:
-            list_authors = doc['_source']['authors'] + doc['_source']['supervisors']
-        else:
-            list_authors = doc['_source']['authors']
+#             }
+#         }
+#     }
+#     _search_author = es.search(index=publications_index, doc_type="publications", body=_query_author, size=100)
+#     for doc in _search_author['hits']['hits']:
+#         if tud_demo:
+#             list_authors = doc['_source']['authors'] + doc['_source']['supervisors']
+#         else:
+#             list_authors = doc['_source']['authors']
 
-        list_authors = [l.lower() for l in list_authors]
-        if any(_string.lower() in s for s in list_authors):
-            if (doc['_source']['title']) not in title_list:
-                title_list.append(doc['_source']['title'])
-                if doc['_source']['journal'] == 'arxiv':
-                    journal_list.append(doc['_source']['keywords'][0])
-                else:
-                    journal_list.append(doc['_source']['journal'])
-                year_list.append(doc['_source']['year'])
-                id_list.append(doc['_id'])
+#         list_authors = [l.lower() for l in list_authors]
+#         if any(_string.lower() in s for s in list_authors):
+#             if (doc['_source']['title']) not in title_list:
+#                 title_list.append(doc['_source']['title'])
+#                 if doc['_source']['journal'] == 'arxiv':
+#                     journal_list.append(doc['_source']['keywords'][0])
+#                 else:
+#                     journal_list.append(doc['_source']['journal'])
+#                 year_list.append(doc['_source']['year'])
+#                 id_list.append(doc['_id'])
 
-                if tud_demo:
-                    authors = doc['_source']['authors'] + doc['_source']['supervisors']
-                    authors_list.append(authors)
-                else:
-                    authors_list.append(doc['_source']['authors'])
+#                 if tud_demo:
+#                     authors = doc['_source']['authors'] + doc['_source']['supervisors']
+#                     authors_list.append(authors)
+#                 else:
+#                     authors_list.append(doc['_source']['authors'])
 
-    if len(_string.split()) > 2:
-        _query_title = {
-            'query': {
-                'match_phrase': {
-                    'title': _string
-                }
-            }
-        }
-        _search_title = es.search(index=publications_index, doc_type="publications", body=_query_title)
-        for doc in _search_title['hits']['hits']:
-            if (doc['_source']['title']) not in title_list:
-                title_list.append(doc['_source']['title'])
-                journal_list.append(doc['_source']['journal'])
-                if doc['_source']['journal'] == 'arxiv':
-                    journal_list.append(doc['_source']['keywords'][0])
-                else:
-                    journal_list.append(doc['_source']['journal'])
-                year_list.append(int(doc['_source']['year'].strip()))
-                id_list.append(doc['_id'])
+#     if len(_string.split()) > 2:
+#         _query_title = {
+#             'query': {
+#                 'match_phrase': {
+#                     'title': _string
+#                 }
+#             }
+#         }
+#         _search_title = es.search(index=publications_index, doc_type="publications", body=_query_title)
+#         for doc in _search_title['hits']['hits']:
+#             if (doc['_source']['title']) not in title_list:
+#                 title_list.append(doc['_source']['title'])
+#                 journal_list.append(doc['_source']['journal'])
+#                 if doc['_source']['journal'] == 'arxiv':
+#                     journal_list.append(doc['_source']['keywords'][0])
+#                 else:
+#                     journal_list.append(doc['_source']['journal'])
+#                 year_list.append(int(doc['_source']['year'].strip()))
+#                 id_list.append(doc['_id'])
 
-                if tud_demo:
-                    authors = doc['_source']['authors'] + doc['_source']['supervisors']
-                    authors_list.append(authors)
-                else:
-                    authors_list.append(doc['_source']['authors'])
+#                 if tud_demo:
+#                     authors = doc['_source']['authors'] + doc['_source']['supervisors']
+#                     authors_list.append(authors)
+#                 else:
+#                     authors_list.append(doc['_source']['authors'])
+
+#     _query_all = {
+#         'query': {
+#             "query_string": {
+#                 "default_field": "content",
+#                 "query": _string
+#             }
+#         }
+#     }
+#     _search = es.search(index=publications_index, doc_type="publications", body=_query_all, size=250)
+
+#     context = {}
+#     list1 = []
+
+#     i = 0
+#     j = 0
+#     first_flag = True
+#     flag2 = 0
+
+#     if _search is not None:
+#         for doc in _search['hits']['hits']:  # Secondly, put the matches from the full content in the list
+#             if first_flag:
+#                 query_dict['title'] = [doc['_source']['title']]
+#                 query_dict['journal'] = [doc['_source']['journal']]
+#                 if doc['_source']['journal'] == 'arxiv':
+#                     query_dict['journal'] = [doc['_source']['keywords'][0]]
+#                 else:
+#                     query_dict['journal'] = [doc['_source']['journal']]
+#                 query_dict['year'] = [doc['_source']['year']]
+#                 query_dict['content'] = [doc['_source']['content']]
+#                 if tud_demo:
+#                     authors = doc['_source']['authors'] + doc['_source']['supervisors']
+#                     authors_list.append(authors)
+#                 else:
+#                     authors_list.append(doc['_source']['authors'])
+#                 first_flag = False
+
+#             else:
+#                 if (doc['_source']['title']) not in title_list:
+#                     title_list.append(doc['_source']['title'])
+#                     if doc['_source']['journal'] == 'arxiv':
+#                         journal_list.append(doc['_source']['keywords'][0])
+#                     else:
+#                         journal_list.append(doc['_source']['journal'])
+#                     year_list.append(doc['_source']['year'])
+#                     id_list.append(doc['_id'])
+#                     if tud_demo:
+#                         authors = doc['_source']['authors'] + doc['_source']['supervisors']
+#                         authors_list.append(authors)
+#                     else:
+#                         authors_list.append(doc['_source']['authors'])
+#             # query_dict['content'].append(doc['_source']['content'])
+#         # list1.append(_search['hits']['hits'][j]['_source']['jou'])
+#     # print(query_dict)
 
     _query_all = {
-        'query': {
-            "query_string": {
-                "default_field": "content",
-                "query": _string
+        "query": {
+            "multi_match": {
+                "query": _string,
+                "fields": ["authors^1.5", "title^2", "content", "abstract"]
             }
         }
     }
-    _search = es.search(index=publications_index, doc_type="publications", body=_query_all, size=250)
 
-    context = {}
-    list1 = []
-
-    i = 0
-    j = 0
-    first_flag = True
-    flag2 = 0
-
-    if _search is not None:
-        for doc in _search['hits']['hits']:  # Secondly, put the matches from the full content in the list
-            if first_flag:
-                query_dict['title'] = [doc['_source']['title']]
-                query_dict['journal'] = [doc['_source']['journal']]
-                if doc['_source']['journal'] == 'arxiv':
-                    query_dict['journal'] = [doc['_source']['keywords'][0]]
-                else:
-                    query_dict['journal'] = [doc['_source']['journal']]
-                query_dict['year'] = [doc['_source']['year']]
-                query_dict['content'] = [doc['_source']['content']]
-                if tud_demo:
-                    authors = doc['_source']['authors'] + doc['_source']['supervisors']
-                    authors_list.append(authors)
-                else:
-                    authors_list.append(doc['_source']['authors'])
-                first_flag = False
-
+    _search = es.search(index=publications_index, doc_type="publications", body=_query_all, size=2500)
+    max_score = 10
+    for doc in _search['hits']['hits']:
+        score = doc['_score']
+        if score > max_score:
+            max_score = score
+        if doc['_score'] > max_score / 2:
+            id_list.append(doc['_id'])
+            title_list.append(doc['_source']['title'])
+            if doc['_source']['journal'] == 'arxiv':
+                journal_list.append(doc['_source']['keywords'][0])
             else:
-                if (doc['_source']['title']) not in title_list:
-                    title_list.append(doc['_source']['title'])
-                    if doc['_source']['journal'] == 'arxiv':
-                        journal_list.append(doc['_source']['keywords'][0])
-                    else:
-                        journal_list.append(doc['_source']['journal'])
-                    year_list.append(doc['_source']['year'])
-                    id_list.append(doc['_id'])
-                    if tud_demo:
-                        authors = doc['_source']['authors'] + doc['_source']['supervisors']
-                        authors_list.append(authors)
-                    else:
-                        authors_list.append(doc['_source']['authors'])
-            # query_dict['content'].append(doc['_source']['content'])
-        # list1.append(_search['hits']['hits'][j]['_source']['jou'])
-    # print(query_dict)
+                journal_list.append(doc['_source']['journal'])
+            year_list.append(doc['_source']['year'])
+            id_list.append(doc['_id'])
+            if tud_demo:
+                authors = doc['_source']['authors'] + doc['_source']['supervisors']
+                authors_list.append(authors)
+            else:
+                authors_list.append(doc['_source']['authors'])
 
     return id_list, title_list, journal_list, year_list, authors_list
+
+
+def popular_papers():
+    title_list = []
+    journal_list = []
+    year_list = []
+    authors_list = []
+    id_list = []
+    entity_per_paper = {}
+    _search = es.search(index=publications_index, doc_type="publications", body={}, size=1000)
+    for hit in _search['hits']['hits']:
+        paper = hit['_id']
+        authors = hit['_source']['authors']
+        title = hit['_source']['title']
+        new_key = paper + '|' + ';'.join(authors) + '|' + title
+        _query_terms = {
+            "query": {
+                "bool": {
+                    "must": [{"match": {'paper_id': paper}}],
+                    #        {"match": {'experiment': 'fullcorpusCRF_1cycle_fullcorpusWord2vec'}}],
+                    "must_not": [{"match": {'annotator': 'noise'}},
+                                 {"match": {'annotator': 'other'}},
+                                 {"match": {'in_wordnet': 1}}],
+                    "should": [{"match": {"annotator": 'method'}},
+                               {"match": {"annotator": 'dataset'}}]
+                }
+            }
+        }
+
+        _query_terms = es.search(index=entities_index, doc_type="entities", body=_query_terms, size=20)
+        entities = []
+        for entity_hit in _query_terms['hits']['hits']:
+            entity = entity_hit['_source']['clean']
+            annotation = entity_hit['_source']['annotator']
+            if annotation in ['dataset', 'method']:
+                entities.append((entity, annotation))
+        if len(entities) > 3:
+            entity_per_paper[new_key] = entities
+            title_list.append(hit['_source']['title'])
+            if hit['_source']['journal'] == 'arxiv':
+                journal_list.append(hit['_source']['keywords'][0])
+            else:
+                journal_list.append(hit['_source']['journal'])
+            year_list.append(hit['_source']['year'])
+            id_list.append(hit['_id'])
+            if tud_demo:
+                authors = hit['_source']['authors'] + hit['_source']['supervisors']
+                authors_list.append(authors)
+            else:
+                authors_list.append(hit['_source']['authors'])
+
+    return id_list, title_list, journal_list, year_list, authors_list
+
+
+def autocomplete_query(search_string):
+
+    auto_titles = []
+
+    _query_all = {
+        "query": {
+            "match_phrase_prefix": {
+                "title": {
+                    "query": search_string,
+                    "slop": 20,
+                    "max_expansions": 30
+                }
+            }
+        }
+    }
+
+    _search = es.search(index=publications_index, doc_type="publications", body=_query_all, size=10)
+    for doc in _search['hits']['hits']:
+        auto_titles.append(doc['_source']['title'])
+
+    return auto_titles
 
 
 def popular_upcoming_entities(paper_id_list):
@@ -208,7 +313,7 @@ def popular_upcoming_entities(paper_id_list):
     entity_occurrences = {}
     upcoming_occurrences = {}
 
-    for paper in paper_id_list:
+    for paper in paper_id_list[:20]:
         _query_terms = {
             "query": {
                 "bool": {
@@ -490,7 +595,7 @@ def search_by_author(_string):
             }
         }
 
-    _search_author = es.search(index=publications_index, doc_type="publications", body=_query_author)
+    _search_author = es.search(index=publications_index, doc_type="publications", body=_query_author, size=100)
 
     for doc in _search_author['hits']['hits']:
         title_list.append(doc['_source']['title'])
@@ -582,8 +687,9 @@ def search_by_entity(_string):
 
         for doc in _search_entities['hits']['hits']:
             entity_list = []
-            entity = doc['_source']['clean'].lower()
-            if not wordnet.synsets(entity.lower()) and entity.lower() not in stopword_list:
+            entity = doc['_source']['clean']
+            if not wordnet.synsets(entity) and entity not in stopword_list and \
+                entity not in _string and _string not in entity:
                 data.append([entity, doc['_source']['year']])
 
     df = pd.DataFrame(data, columns=['key', 'date'])
@@ -703,7 +809,7 @@ def wordcloud_entity(_string):
             entity = doc['_source']['clean']
             if not wordnet.synsets(entity.lower()) and entity.lower() not in stopword_list:
                 entity_list = []
-                if _string.lower() not in doc['_source']['clean'].lower():
+                if _string.lower() not in doc['_source']['clean'] and doc['_source']['clean'] not in _string.lower():
                     ent = '_'.join([w.strip() for w in doc['_source']['clean'].split() if
                                     len(w) > 1 and w.lower() not in stopword_list])
                     popular = popular + ent.strip() + ' '
@@ -715,7 +821,7 @@ def filter_by_pie(_string):
     data = []
     _string = ' '.join(_string.split('%20'))
     query = {"query": {"match_phrase": {"word": _string}}}
-    for doc in helpers.scan(es, index=entities_index, query=query, size=7000):
+    for doc in helpers.scan(es, index=entities_index, query=query, size=2000):
         paper_id = doc['_source']['paper_id']
         _search_papers = es.search(index=publications_index, doc_type="publications",
                                    body={"query": {"match_phrase": {"_id": {"query": paper_id}}}}, size=1)
@@ -724,10 +830,10 @@ def filter_by_pie(_string):
             topic = topic.split(' - ')[-1]
             data.append(topic)
 
-    df = pd.DataFrame(data, columns=['conference'])
-    df1 = df.groupby(['conference']).size().reset_index(name="confnum")
-    df1 = df1.sort_values(['confnum'], ascending=False).head(6)
-    return df1
+    conferences = pd.DataFrame(data, columns=['conference'])
+    grouped_conf = conferences.groupby(['conference']).size().reset_index(name="confnum")
+    sorted_conf = grouped_conf.sort_values(['confnum'], ascending=False).head(6)
+    return sorted_conf
 
 
 def dosearch_entity(_string):
